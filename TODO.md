@@ -1,0 +1,7 @@
+- make it work with an image
+  - thus it is easier to debug
+  - no need for camera
+  - implement that in the videoGrabbing
+- make the resolution of the camera tunable
+- make the scaleDown of the marker recognition tunable
+- 

@@ -20,15 +20,22 @@ THREEx.JsArucoMarker = function(){
 		canvasElement.style.opacity = 0.2
 	}
 
-	this.update	= function(videoElement, object3d){
-		// if no new image for videoElement do nothing
-		if (videoElement.readyState !== videoElement.HAVE_ENOUGH_DATA) return
+	this.update	= function(srcElement, object3d){
+		
+		if( srcElement instanceof HTMLVideoElement ){
+			// if no new image for srcElement do nothing
+			if (srcElement.readyState !== srcElement.HAVE_ENOUGH_DATA) return
 
-		canvasElement.width = videoElement.videoWidth/2
-		canvasElement.height = videoElement.videoHeight/2
+			canvasElement.width = srcElement.videoWidth/2
+			canvasElement.height = srcElement.videoHeight/2
+		}else if( srcElement instanceof HTMLImageElement ){
+			if( srcElement.naturalWidth === 0 )	return
+			canvasElement.width = srcElement.naturalWidth/10
+			canvasElement.height = srcElement.naturalHeight/10
+		}else console.assert(false)
 
-		// get imageData from videoElement
-		context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+		// get imageData from srcElement
+		context.drawImage(srcElement, 0, 0, canvasElement.width, canvasElement.height);
 		var imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
 
 		// detect markers

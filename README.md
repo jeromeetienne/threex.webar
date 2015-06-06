@@ -9,7 +9,6 @@
 
 ---
 
-
 # TODO
 - the goal is what ? to produce examples of AR with markers
 - ultimatly it is a phone webapps
