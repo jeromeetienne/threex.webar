@@ -9,7 +9,7 @@
 <script src='../vendor/js-aruco/aruco.js'></script>
 
 <script src='../src/threex.videograbbing3.js'></script>
-<script src='../src/threex.jsarucomarker.js'></script>
+<script src='../src/threex.jsarucomarker2.js'></script>
 
 <body style='margin: 0px; overflow: hidden; text-align:center;'><script>
 (function(){
@@ -70,6 +70,8 @@
 	// build sceneAR
 	var sceneAR	= new THREE.Scene();
 	sceneAR.add(scene)
+	// set the scene as visible 
+	scene.visible	= false
 
 	// render the scene
 	onRenderFcts.push(function(){
@@ -96,15 +98,26 @@
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var videoGrabbing = new THREEx.VideoGrabbing3()
-// window.videoGrabbing = videoGrabbing
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Comments
 	//////////////////////////////////////////////////////////////////////////////////
 
-	var jsArucoMarker	= new THREEx.JsArucoMarker()
+	var jsArucoMarker	= new THREEx.JsArucoMarker2()
 	onRenderFcts.push(function(){
-		var videoElement	= videoGrabbing.domElement
-		jsArucoMarker.update(videoElement, scene)
+		var domElement	= videoGrabbing.domElement
+		var markers	= jsArucoMarker.detectMarkers(domElement)
+		var object3d	= scene
+		
+		object3d.visible = false
+
+		// see if this.markerId has been found
+		markers.forEach(function(marker){
+			if( marker.id !== 265 )	return
+
+			jsArucoMarker.markerToObject3D(marker, object3d)
+			object3d.visible = true
+		})
 	});
 
 })()

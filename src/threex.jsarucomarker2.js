@@ -3,9 +3,8 @@ var THREEx = THREEx || {}
 /**
  * Grab camera
  */
-THREEx.JsArucoMarker = function(){
+THREEx.JsArucoMarker2 = function(){
 	var jsArucoMarker = this
-	this.markerId	= 265
 	this.debugEnabled = true
 	var modelSize = 35.0; // millimeter
 
@@ -21,20 +20,24 @@ THREEx.JsArucoMarker = function(){
 	}
 
 	/**
-	 * update the 
+	 * 
 	 * @param {[type]} srcElement [description]
 	 * @param {[type]} object3d   [description]
 	 * @return {[type]} [description]
 	 */
-	this.update	= function(srcElement, object3d){		
+	this.detectMarkers	= function(srcElement){		
 		if( srcElement instanceof HTMLVideoElement ){
 			// if no new image for srcElement do nothing
-			if (srcElement.readyState !== srcElement.HAVE_ENOUGH_DATA) return
+			if (srcElement.readyState !== srcElement.HAVE_ENOUGH_DATA){
+				return []
+			}
 
 			canvasElement.width = srcElement.videoWidth/2
 			canvasElement.height = srcElement.videoHeight/2
 		}else if( srcElement instanceof HTMLImageElement ){
-			if( srcElement.naturalWidth === 0 )	return
+			if( srcElement.naturalWidth === 0 ){
+				return []				
+			}
 			canvasElement.width = srcElement.naturalWidth/10
 			canvasElement.height = srcElement.naturalHeight/10
 		}else console.assert(false)
@@ -51,35 +54,27 @@ THREEx.JsArucoMarker = function(){
 		if( this.debugEnabled ){
 			drawDebug(markers, canvasElement)
 		}
-
-		object3d.visible = false
-
-		// see if this.markerId has been found
-		markers.forEach(function(marker){
-			if( marker.id !== jsArucoMarker.markerId )	return
-
-			// move the object3d
-			var pose = markerToPose(marker)
-			console.assert(pose !== null)
-			poseJsarucoToObject3D(pose, object3d);
-			object3d.visible = true
-		})
+		
+		return markers
 	}
 	
-	// this.markerToObject3D = function(marker, object3d){
-	// 	// move the object3d
-	// 	var pose = markerToPose(marker)
-	// 	console.assert(pose !== null)
-	// 	poseJsarucoToObject3D(pose, object3d);		
-	// }
+	this.markerToObject3D = function(marker, object3d){
+		// convert corners coordinate - not sure why
+		var corners = []//marker.corners;
+		for (var i = 0; i < marker.corners.length; ++ i){
+			corners.push({
+				x : marker.corners[i].x - (canvasElement.width / 2),
+				y : (canvasElement.height / 2) - marker.corners[i].y,
+			})
+		}
+		// compute the pose from the canvas
+		var posit = new POS.Posit(modelSize, canvasElement.width);
+		var pose = posit.pose(corners);
+		console.assert(pose !== null)
 
-	return
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Comments
-	//////////////////////////////////////////////////////////////////////////////////
-
-	function poseJsarucoToObject3D(pose, object3d){
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Translate pose to THREE.Object3D
+		//////////////////////////////////////////////////////////////////////////////////
 		var rotation = pose.bestRotation
 		var translation = pose.bestTranslation
 
@@ -96,23 +91,7 @@ THREEx.JsArucoMarker = function(){
 		object3d.position.z = -translation[2];
 	}
 
-	function markerToPose(marker){
-		// convert corners coordinate - not sure why
-		var corners = []//marker.corners;
-		for (var i = 0; i < marker.corners.length; ++ i){
-			corners.push({
-				x : marker.corners[i].x - (canvasElement.width / 2),
-				y : (canvasElement.height / 2) - marker.corners[i].y,
-			})
-		}
-		// compute the pose
-		var posit = new POS.Posit(modelSize, canvasElement.width);
-		var pose = posit.pose(corners);
-
-		// return the computed pose
-		return pose
-	}
-
+	return
 
 	/**
 	* draw corners on a canvas - useful to debug
