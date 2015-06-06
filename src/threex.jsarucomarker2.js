@@ -1,7 +1,7 @@
 var THREEx = THREEx || {}
 
 /**
- * Grab camera
+ * Handle jsaruco markers
  */
 THREEx.JsArucoMarker2 = function(){
 	var jsArucoMarker = this
@@ -20,10 +20,9 @@ THREEx.JsArucoMarker2 = function(){
 	}
 
 	/**
-	 * 
-	 * @param {[type]} srcElement [description]
-	 * @param {[type]} object3d   [description]
-	 * @return {[type]} [description]
+	 * Detect Marker in a videoElement or imageElement
+	 * @param {HTMLElement} srcElement - the source element
+	 * @return {Object[]} - array of found markers
 	 */
 	this.detectMarkers	= function(srcElement){		
 		if( srcElement instanceof HTMLVideoElement ){
@@ -55,9 +54,16 @@ THREEx.JsArucoMarker2 = function(){
 			drawDebug(markers, canvasElement)
 		}
 		
+		// return the result
 		return markers
 	}
 	
+	/**
+	 * convert a jsaruco marker to a THREE.Object3D
+	 * 
+	 * @param {Object[]} marker   - a found marker
+	 * @param {THREE.Object3D} object3d - the object3d to move
+	 */
 	this.markerToObject3D = function(marker, object3d){
 		// convert corners coordinate - not sure why
 		var corners = []//marker.corners;
@@ -92,6 +98,10 @@ THREEx.JsArucoMarker2 = function(){
 	}
 
 	return
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Comments
+	//////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	* draw corners on a canvas - useful to debug
