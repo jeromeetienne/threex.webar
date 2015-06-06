@@ -20,13 +20,12 @@ THREEx.JsArucoMarker = function(){
 		canvasElement.style.opacity = 0.2
 	}
 
-
 	this.update	= function(videoElement, object3d){
 		// if no new image for videoElement do nothing
 		if (videoElement.readyState !== videoElement.HAVE_ENOUGH_DATA) return
 
-		canvasElement.width = videoElement.videoWidth/3
-		canvasElement.height = videoElement.videoHeight/3
+		canvasElement.width = videoElement.videoWidth/2
+		canvasElement.height = videoElement.videoHeight/2
 
 		// get imageData from videoElement
 		context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);

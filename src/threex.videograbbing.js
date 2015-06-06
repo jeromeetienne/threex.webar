@@ -13,6 +13,7 @@ THREEx.VideoGrabbing = function(){
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var domElement = document.createElement('video')
+	domElement.setAttribute('autoplay', true)
 	document.body.appendChild(domElement)
 	domElement.style.position = 'absolute'
 	domElement.style.top = '0px'
