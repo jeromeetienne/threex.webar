@@ -1,0 +1,4 @@
+- put that in its own repository three.js ar player
+- put the examples in /examples
+- put source threex in src/
+- put the index.html

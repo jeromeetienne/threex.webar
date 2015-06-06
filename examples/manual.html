@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<!-- include three.js -->
+<script src='../vendor/three.js/build/three.js'></script>
+
+<!-- include js-aruco -->
+<script src="../vendor/js-aruco/svd.js"></script>
+<script src="../vendor/js-aruco/posit1-patched.js"></script>
+<script src="../vendor/js-aruco/cv.js"></script>
+<script src="../vendor/js-aruco/aruco.js"></script>
+
+<body style='margin: 0px; overflow: hidden; text-align:center;'><script>
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Init
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// init renderer
+	var renderer	= new THREE.WebGLRenderer({
+		antialias	: true,
+		alpha		: true,
+	});
+	renderer.setClearColor(new THREE.Color('black'), 0)
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	document.body.appendChild( renderer.domElement );
+
+	// array of functions for the rendering loop
+	var onRenderFcts= [];
+
+	// init scene and camera
+	var scene = new THREE.Scene()
+
+
+	var camera	= new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 1000);
+	camera.position.z = 2;
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		add an object in the scene
+	//////////////////////////////////////////////////////////////////////////////////
+
+
+	;(function(){
+		// add a torus
+		var geometry = new THREE.SphereGeometry(0.5, 32, 16, Math.PI)
+		var material = new THREE.MeshBasicMaterial( {
+			map: THREE.ImageUtils.loadTexture("images/earth.jpg")
+		})
+		var mesh = new THREE.Mesh(geometry, material);
+		scene.add( mesh );
+		// mesh.rotation.z = Math.PI/2
+		onRenderFcts.push(function(delta){
+			mesh.rotation.y += 0.1 * delta * Math.PI
+		})
+	})()
+
+	var mesh = new THREE.AxisHelper
+	scene.add( mesh );
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		render the whole thing on the page
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// handle window resize
+	window.addEventListener('resize', function(){
+		renderer.setSize( window.innerWidth, window.innerHeight )
+		camera.aspect	= window.innerWidth / window.innerHeight
+		camera.updateProjectionMatrix()
+	}, false)
+
+
+	// build sceneAR
+	var sceneAR	= new THREE.Scene();
+	sceneAR.add(scene)
+
+	// render the sceneAR
+	onRenderFcts.push(function(){
+		renderer.render( sceneAR, camera );
+	})
+
+	// run the rendering loop
+	var lastTimeMsec= null
+	requestAnimationFrame(function animate(nowMsec){
+		// keep looping
+		requestAnimationFrame( animate );
+		// measure time
+		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
+		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+		lastTimeMsec	= nowMsec
+		// call each update function
+		onRenderFcts.forEach(function(onRenderFct){
+			onRenderFct(deltaMsec/1000, nowMsec/1000)
+		})
+	})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		shim party
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// shim
+	navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+	window.URL = window.URL || window.webkitURL;
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		shim party
+	//////////////////////////////////////////////////////////////////////////////////
+
+// ;(function(){
+//
+//         'use strict;'
+//
+//         // create video element
+//         var video        = document.createElement('video')
+//         video.setAttribute('autoplay', true)
+//         document.body.appendChild(video)
+//
+// window.videoElement = video
+// videoElement.style.zIndex = -1;
+//
+//         /**
+//          * Resize video element.
+//          * - Made complex to handle the aspect change
+//          * - it is frequently when the mobile is changing orientation
+//          * - after a search on the internet, it seems hard/impossible to prevent browser from changing orientation
+//          */
+//         function onResize(){
+//                 // is the size of the video available ?
+//                 if( video.videoHeight === 0 )   return
+//
+//                 var videoAspect = video.videoWidth / video.videoHeight
+//                 var windowAspect = window.innerWidth / window.innerHeight
+//
+//                 // var video = document.querySelector('video')
+//                 video.style.position = 'absolute'
+//
+//                 if( videoAspect < windowAspect ){
+//                         video.style.left        = '0%'
+//                         video.style.width       = window.innerWidth + 'px'
+//                         video.style.marginLeft  = '0px'
+//
+//                         video.style.top         = '50%'
+//                         video.style.height      =  (window.innerWidth/videoAspect) + 'px'
+//                         video.style.marginTop   = -(window.innerWidth/videoAspect) /2 + 'px'
+// console.log('videoAspect <<<<< windowAspect')
+//                 }else{
+//                         video.style.top         = '0%'
+//                         video.style.height      = window.innerHeight+'px'
+//                         video.style.marginTop   =  '0px'
+//
+//                         video.style.left        = '50%'
+//                         video.style.width       =  (window.innerHeight*videoAspect) + 'px'
+//                         video.style.marginLeft  = -(window.innerHeight*videoAspect)/2 + 'px'
+// console.log('videoAspect >>>> windowAspect')
+//                 }
+//         }
+//
+//         window.addEventListener('resize', function(event){
+//                 onResize()
+//         })
+//
+//         // just to be sure - resize on mobile is funky to say the least
+//         setInterval(function(){
+//                 onResize()
+//         }, 500)
+//
+//         // get the media sources
+//         MediaStreamTrack.getSources(function(sourceInfos) {
+//                 // define getUserMedia() constraints
+//                 var constraints = {
+//                         video: true,
+//                         audio: false,
+//                 }
+//                 // to mirror the video element when it isnt 'environment'
+//                 // video.style.transform   = 'scaleX(-1)'
+//
+//                 // it it finds the videoSource 'environment', modify constraints.video
+//                 for (var i = 0; i != sourceInfos.length; ++i) {
+//                         var sourceInfo = sourceInfos[i];
+//                         if(sourceInfo.kind == "video" && sourceInfo.facing == "environment") {
+//                                 constraints.video = {
+//                                         optional: [{sourceId: sourceInfo.id}]
+//                                 }
+//                                 // not to mirror the video element when it is 'environment'
+//                                 // video.style.transform   = ''
+//                         }
+//                 }
+//
+//                 // try to get user media
+//                 navigator.getUserMedia( constraints, function(stream){
+//                         video.src = URL.createObjectURL(stream);
+//                 }, function(error) {
+//                         console.error("Cant getUserMedia()! due to ", error);
+//                 });
+//         });
+// })()
+
+;(function(){
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Comments
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var videoElement = document.createElement('video')
+	window.videoElement = videoElement
+	videoElement.style.position = 'absolute'
+	videoElement.style.top = '0px'
+	videoElement.style.left = '0px'
+	videoElement.style.width = '100%'
+	videoElement.style.height = '100%'
+	videoElement.style.zIndex = -1;
+
+	document.body.appendChild(videoElement)
+	videoElement.setAttribute('autoplay', true)
+
+	// var constraints = {video:true}
+	// navigator.getUserMedia(constraints, function (stream){
+	// 	videoElement.src = URL.createObjectURL(stream);
+	// 	videoElement.play();
+	// }, function(error){
+	// 	console.log("An error occured! ");
+	// 	console.dir(error)
+	// });
+
+
+        // get the media sources
+        MediaStreamTrack.getSources(function(sourceInfos) {
+                // define getUserMedia() constraints
+                var constraints = {
+                        video: true,
+                        audio: false,
+                }
+                // to mirror the video element when it isnt 'environment'
+                // video.style.transform   = 'scaleX(-1)'
+
+                // it it finds the videoSource 'environment', modify constraints.video
+                for (var i = 0; i != sourceInfos.length; ++i) {
+                        var sourceInfo = sourceInfos[i];
+                        if(sourceInfo.kind == "video" && sourceInfo.facing == "environment") {
+                                constraints.video = {
+                                        optional: [{sourceId: sourceInfo.id}]
+                                }
+                                // not to mirror the video element when it is 'environment'
+                                // video.style.transform   = ''
+                        }
+                }
+
+                // try to get user media
+                navigator.getUserMedia( constraints, function(stream){
+                        videoElement.src = URL.createObjectURL(stream);
+                }, function(error) {
+                        console.error("Cant getUserMedia()! due to ", error);
+                });
+        });
+})()
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Comments
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var canvasElement = document.createElement('canvas')
+	// canvasElement.width	= 320
+	// canvasElement.height	= 240
+	// canvasElement.width	= 320*2
+	// canvasElement.height	= 240*2
+	document.body.appendChild(canvasElement)
+	canvasElement.style.position = 'absolute'
+	canvasElement.style.top = '0px'
+	canvasElement.style.left = '0px'
+	canvasElement.style.opacity = 0.2
+
+	var context = canvasElement.getContext("2d");
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Comments
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var modelSize = 35.0; // millimeter
+
+	onRenderFcts.push(function(){
+		// if no new image for videoElement do nothing
+		if (videoElement.readyState !== videoElement.HAVE_ENOUGH_DATA) return
+
+		canvasElement.width = videoElement.videoWidth/3
+		canvasElement.height = videoElement.videoHeight/3
+
+		// get imageData from videoElement
+		context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+		var imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
+
+		// detect markers
+		var detector = new AR.Detector();
+		var markers = detector.detect(imageData);
+
+		// display markers on canvas for debug
+		drawCorners(markers, canvasElement)
+
+		scene.visible = false
+
+		// if no marker got detected
+		if (markers.length  ===  0) return
+
+		var marker = markers[0]
+
+		if( marker.id === 265 ){
+			var pose = markerToPose(marker)
+			console.assert(pose !== null)
+			poseJsarucoToObject3D(pose, scene);
+			scene.visible = true
+		}
+	});
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Comments
+	//////////////////////////////////////////////////////////////////////////////////
+
+	function poseJsarucoToObject3D(pose, object3d){
+		var rotation = pose.bestRotation
+		var translation = pose.bestTranslation
+
+		object3d.scale.x = modelSize;
+		object3d.scale.y = modelSize;
+		object3d.scale.z = modelSize;
+
+		object3d.rotation.x = -Math.asin(-rotation[1][2]);
+		object3d.rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
+		object3d.rotation.z =  Math.atan2(rotation[1][0], rotation[1][1]);
+
+		object3d.position.x =  translation[0];
+		object3d.position.y =  translation[1];
+		object3d.position.z = -translation[2];
+	}
+
+	function markerToPose(marker){
+		// convert corners coordinate - not sure why
+		var corners = []//marker.corners;
+		for (var i = 0; i < marker.corners.length; ++ i){
+			corners.push({
+				x : marker.corners[i].x - (canvasElement.width / 2),
+				y : (canvasElement.height / 2) - marker.corners[i].y,
+			})
+		}
+		// compute the pose
+		var posit = new POS.Posit(modelSize, canvasElement.width);
+		var pose = posit.pose(corners);
+
+		// return the computed pose
+		return pose
+	}
+
+
+	/**
+	* draw corners on a canvas - useful to debug
+	*
+	* @param {Object[]} markers - array of found markers
+	*/
+	function drawCorners(markers, canvasElement){
+		var context = canvasElement.getContext("2d");
+		context.lineWidth = 3;
+
+		for (var i = 0; i < markers.length; ++ i){
+			var marker = markers[i]
+			var corners = marker.corners;
+
+			context.strokeStyle = "red";
+			context.beginPath();
+
+			for (var j = 0; j < corners.length; ++ j){
+				var corner = corners[j];
+				context.moveTo(corner.x, corner.y);
+				corner = corners[(j + 1) % corners.length];
+				context.lineTo(corner.x, corner.y);
+			}
+
+			context.stroke();
+			context.closePath();
+
+			context.strokeStyle = "green";
+			context.strokeRect(corners[0].x - 2, corners[0].y - 2, 4, 4);
+			// console.log('marker', marker.id)
+
+			context.fillStyle = "blue";
+			context.font = "bold 10px Arial";
+			context.fillText("id: "+marker.id, corners[0].x, corners[0].y);
+		}
+	};
+
+</script></body>
