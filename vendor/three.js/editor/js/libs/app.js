@@ -10,10 +10,20 @@ var APP = {
 
 		var loader = new THREE.ObjectLoader();
 		var camera, scene, renderer;
-		
+
 		var vr, controls;
 
-		var events = {};
+		var events = {
+			keydown: [],
+			keyup: [],
+			mousedown: [],
+			mouseup: [],
+			mousemove: [],
+			touchstart: [],
+			touchend: [],
+			touchmove: [],
+			update: []
+		}
 
 		this.dom = undefined;
 
@@ -24,11 +34,8 @@ var APP = {
 
 			vr = json.project.vr;
 
-			renderer = new THREE.WebGLRenderer( {
-				antialias: true,
-				alpha: true
-			} );
-			// renderer.setClearColor( 0x000000 );
+			renderer = new THREE.WebGLRenderer( { antialias: true } );
+			renderer.setClearColor( 0x000000 );
 			renderer.setPixelRatio( window.devicePixelRatio );
 			this.dom = renderer.domElement;
 
@@ -57,6 +64,7 @@ var APP = {
 
 					var script = scripts[ i ];
 
+// TODO move that to this.initScript(object,script)
 					var functions = ( new Function( 'player, scene, keydown, keyup, mousedown, mouseup, mousemove, touchstart, touchend, touchmove, update', script.source + '\nreturn { keydown: keydown, keyup: keyup, mousedown: mousedown, mouseup: mouseup, mousemove: mousemove, touchstart: touchstart, touchend: touchend, touchmove: touchmove, update: update };' ).bind( object ) )( this, scene );
 
 					for ( var name in functions ) {
@@ -79,6 +87,26 @@ var APP = {
 			}
 
 		};
+		
+		this.initScript = function(object, script){
+
+			var functions = ( new Function( 'player, scene, keydown, keyup, mousedown, mouseup, mousemove, touchstart, touchend, touchmove, update', script.source + '\nreturn { keydown: keydown, keyup: keyup, mousedown: mousedown, mouseup: mouseup, mousemove: mousemove, touchstart: touchstart, touchend: touchend, touchmove: touchmove, update: update };' ).bind( object ) )( this, scene );
+
+			for ( var name in functions ) {
+
+				if ( functions[ name ] === undefined ) continue;
+
+				if ( events[ name ] === undefined ) {
+
+					console.warn( 'APP.Player: event type not supported (', name, ')' );
+					continue;
+
+				}
+
+				events[ name ].push( functions[ name ].bind( object ) );
+
+			}			
+		}
 
 		this.setCamera = function ( value ) {
 
@@ -131,21 +159,9 @@ var APP = {
 
 		},
 
-		this.getScene = function () {
+		this.setRenderer = function ( value ) {
 
-			return scene;
-
-		},
-
-		this.getCamera = function () {
-
-			return camera;
-
-		},
-
-		this.getRenderer = function () {
-
-			return renderer;
+			renderer = value;
 
 		},
 
@@ -165,6 +181,7 @@ var APP = {
 
 		var dispatch = function ( array, event ) {
 
+if( array === undefined ) debugger
 			for ( var i = 0, l = array.length; i < l; i ++ ) {
 
 				array[ i ]( event );

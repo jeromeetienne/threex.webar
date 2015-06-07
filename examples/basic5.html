@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <!-- include three.js -->
 <script src='../vendor/three.js/build/three.js'></script>
+<script src='../vendor/three.js/editor/js/libs/app.js'></script>
 
 <!-- include js-aruco -->
 <script src='../vendor/js-aruco/svd.js'></script>
@@ -77,6 +78,7 @@
 		renderer.render( sceneAR, camera );
 	})
 	// TODO do i need to render this function elsewhere ?
+	// - yes if sceneAR is required
 
 	// run the rendering loop
 	var lastTimeMsec= null
@@ -104,6 +106,7 @@
 	//////////////////////////////////////////////////////////////////////////////////
 
 	var jsArucoMarker	= new THREEx.JsArucoMarker2()
+	jsArucoMarker.videoScaleDown = 10
 	onRenderFcts.push(function(){
 		var domElement	= videoGrabbing.domElement
 		var markers	= jsArucoMarker.detectMarkers(domElement)
@@ -116,10 +119,12 @@
 			if( marker.id !== 265 )	return
 
 			jsArucoMarker.markerToObject3D(marker, object3d)
+
 			object3d.visible = true
 		})
 	});
 
 })()
 
-</script></body>
+</script>
+</body>

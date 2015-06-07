@@ -7,27 +7,31 @@ window.URL = window.URL || window.webkitURL;
 /**
  * Grab camera
  */
-THREEx.VideoGrabbing3 = function(){
+THREEx.VideoGrabbing4 = function(options){
+	options = options || {}
+	var sourceType = options.sourceType !== undefined ? options.sourceType : 'image'
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Comments
 	//////////////////////////////////////////////////////////////////////////////////
-if( false ){
-	var domElement	= document.createElement('img')
-	domElement.src	= 'images/IMG_20150606_200552-small.jpg'
-        document.body.appendChild(domElement)
-	domElement.style.zIndex = -1;
-        domElement.style.position = 'absolute'
+	if( sourceType === 'image' ){
+		var domElement	= document.createElement('img')
+		domElement.src	= 'images/IMG_20150606_200552-small.jpg'
+	        document.body.appendChild(domElement)
+		domElement.style.zIndex = -1;
+	        domElement.style.position = 'absolute'
 
-	domElement.style.top = '50%'
-	domElement.style.left = '50%'
-	domElement.style.marginRight = '50%'
-	// domElement.style.marginBottom = '50%'
-	domElement.style.transform = 'translate(-50%, -50%)'
+		domElement.style.top = '50%'
+		domElement.style.left = '50%'
+		domElement.style.marginRight = '50%'
+		// domElement.style.marginBottom = '50%'
+		domElement.style.transform = 'translate(-50%, -50%)'
 
-	this.domElement = domElement
-	return
-}
+		this.domElement = domElement
+		return
+	}
+	
+	console.assert(sourceType === 'video')
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Comments
@@ -41,10 +45,10 @@ if( false ){
 	domElement.style.zIndex = -1;
         domElement.style.position = 'absolute'
 
-	domElement.style.top = '0px'
-	domElement.style.left = '0px'
-	domElement.style.width = '100%'
-	domElement.style.height = '100%'
+	domElement.style.top = '50%'
+	domElement.style.left = '50%'
+	domElement.style.marginRight = '50%'
+	domElement.style.transform = 'translate(-50%, -50%)'
 
         /**
          * Resize video element.

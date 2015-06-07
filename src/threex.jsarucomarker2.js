@@ -4,8 +4,10 @@ var THREEx = THREEx || {}
  * Handle jsaruco markers
  */
 THREEx.JsArucoMarker2 = function(){
-	var jsArucoMarker = this
+	var _this = this
 	this.debugEnabled = true
+	this.videoScaleDown = 2
+
 	var modelSize = 35.0; // millimeter
 
 	var canvasElement = document.createElement('canvas')
@@ -21,28 +23,31 @@ THREEx.JsArucoMarker2 = function(){
 
 	/**
 	 * Detect Marker in a videoElement or imageElement
-	 * @param {HTMLElement} srcElement - the source element
+	 * 
+	 * @param {HTMLVideoElement|HTMLImageElement} videoElement - the source element
 	 * @return {Object[]} - array of found markers
 	 */
-	this.detectMarkers	= function(srcElement){		
-		if( srcElement instanceof HTMLVideoElement ){
-			// if no new image for srcElement do nothing
-			if (srcElement.readyState !== srcElement.HAVE_ENOUGH_DATA){
+	this.detectMarkers	= function(videoElement){		
+		// if domElement is a video
+		if( videoElement instanceof HTMLVideoElement ){
+			// if no new image for videoElement do nothing
+			if (videoElement.readyState !== videoElement.HAVE_ENOUGH_DATA){
 				return []
 			}
 
-			canvasElement.width = srcElement.videoWidth/2
-			canvasElement.height = srcElement.videoHeight/2
-		}else if( srcElement instanceof HTMLImageElement ){
-			if( srcElement.naturalWidth === 0 ){
+			canvasElement.width = videoElement.videoWidth/_this.videoScaleDown
+			canvasElement.height = videoElement.videoHeight/_this.videoScaleDown
+		// if domElement is a image
+	}else if( videoElement instanceof HTMLImageElement ){
+			if( videoElement.naturalWidth === 0 ){
 				return []				
 			}
-			canvasElement.width = srcElement.naturalWidth/10
-			canvasElement.height = srcElement.naturalHeight/10
+			canvasElement.width = videoElement.naturalWidth/_this.videoScaleDown
+			canvasElement.height = videoElement.naturalHeight/_this.videoScaleDown
 		}else console.assert(false)
 
-		// get imageData from srcElement
-		context.drawImage(srcElement, 0, 0, canvasElement.width, canvasElement.height);
+		// get imageData from videoElement
+		context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
 		var imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
 
 		// detect markers
