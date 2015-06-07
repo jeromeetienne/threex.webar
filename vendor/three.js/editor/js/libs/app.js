@@ -10,7 +10,7 @@ var APP = {
 
 		var loader = new THREE.ObjectLoader();
 		var camera, scene, renderer;
-
+		
 		var vr, controls;
 
 		var events = {};
@@ -24,8 +24,11 @@ var APP = {
 
 			vr = json.project.vr;
 
-			renderer = new THREE.WebGLRenderer( { antialias: true } );
-			renderer.setClearColor( 0x000000 );
+			renderer = new THREE.WebGLRenderer( {
+				antialias: true,
+				alpha: true
+			} );
+			// renderer.setClearColor( 0x000000 );
 			renderer.setPixelRatio( window.devicePixelRatio );
 			this.dom = renderer.domElement;
 
@@ -125,6 +128,24 @@ var APP = {
 		this.setScene = function ( value ) {
 
 			scene = value;
+
+		},
+
+		this.getScene = function () {
+
+			return scene;
+
+		},
+
+		this.getCamera = function () {
+
+			return camera;
+
+		},
+
+		this.getRenderer = function () {
+
+			return renderer;
 
 		},
 
