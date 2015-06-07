@@ -34,11 +34,19 @@ var APP = {
 
 			vr = json.project.vr;
 
-			renderer = new THREE.WebGLRenderer( { antialias: true } );
-			renderer.setClearColor( 0x000000 );
+			renderer = new THREE.WebGLRenderer( {
+				antialias: true,
+				alpha: true,
+			});
+			// renderer.setClearColor( 0x000000 );
 			renderer.setPixelRatio( window.devicePixelRatio );
 			this.dom = renderer.domElement;
 
+			// build sceneAR
+			// var sceneAR	= new THREE.Scene();
+			// sceneAR.add(loader.parse( json.scene ))
+			// this.setScene(sceneAR)
+			
 			this.setScene( loader.parse( json.scene ) );
 			this.setCamera( loader.parse( json.camera ) );
 
@@ -64,23 +72,7 @@ var APP = {
 
 					var script = scripts[ i ];
 
-// TODO move that to this.initScript(object,script)
-					var functions = ( new Function( 'player, scene, keydown, keyup, mousedown, mouseup, mousemove, touchstart, touchend, touchmove, update', script.source + '\nreturn { keydown: keydown, keyup: keyup, mousedown: mousedown, mouseup: mouseup, mousemove: mousemove, touchstart: touchstart, touchend: touchend, touchmove: touchmove, update: update };' ).bind( object ) )( this, scene );
-
-					for ( var name in functions ) {
-
-						if ( functions[ name ] === undefined ) continue;
-
-						if ( events[ name ] === undefined ) {
-
-							console.warn( 'APP.Player: event type not supported (', name, ')' );
-							continue;
-
-						}
-
-						events[ name ].push( functions[ name ].bind( object ) );
-
-					}
+					this.initScript(object, script)
 
 				}
 
@@ -115,41 +107,41 @@ var APP = {
 			camera.updateProjectionMatrix();
 
 
-			if ( vr === true ) {
-
-				if ( camera.parent === undefined ) {
-
-					// camera needs to be in the scene so camera2 matrix updates
-					
-					scene.add( camera );
-
-				}
-
-				var camera2 = camera.clone();
-				camera.add( camera2 );
-
-				camera = camera2;
-
-				controls = new THREE.VRControls( camera );
-				renderer = new THREE.VREffect( renderer );
-
-				document.addEventListener( 'keyup', function ( event ) {
-
-					switch ( event.keyCode ) {
-						case 90:
-							controls.zeroSensor();
-							break;
-					}
-
-				} );
-
-				this.dom.addEventListener( 'dblclick', function () {
-
-					renderer.setFullScreen( true );
-
-				} );
-
-			}
+			// if ( vr === true ) {
+			// 
+			// 	if ( camera.parent === undefined ) {
+			// 
+			// 		// camera needs to be in the scene so camera2 matrix updates
+			// 		
+			// 		scene.add( camera );
+			// 
+			// 	}
+			// 
+			// 	var camera2 = camera.clone();
+			// 	camera.add( camera2 );
+			// 
+			// 	camera = camera2;
+			// 
+			// 	controls = new THREE.VRControls( camera );
+			// 	renderer = new THREE.VREffect( renderer );
+			// 
+			// 	document.addEventListener( 'keyup', function ( event ) {
+			// 
+			// 		switch ( event.keyCode ) {
+			// 			case 90:
+			// 				controls.zeroSensor();
+			// 				break;
+			// 		}
+			// 
+			// 	} );
+			// 
+			// 	this.dom.addEventListener( 'dblclick', function () {
+			// 
+			// 		renderer.setFullScreen( true );
+			// 
+			// 	} );
+			// 
+			// }
 
 		};
 
@@ -162,6 +154,24 @@ var APP = {
 		this.setRenderer = function ( value ) {
 
 			renderer = value;
+			this.dom = renderer.domElement
+		},
+
+		this.getCamera = function () {
+
+			return camera;
+
+		},
+
+		this.getScene = function () {
+
+			return scene;
+
+		},
+
+		this.getRenderer = function () {
+
+			return renderer;
 
 		},
 

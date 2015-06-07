@@ -5,10 +5,10 @@ var THREEx = THREEx || {}
  */
 THREEx.JsArucoMarker2 = function(){
 	var _this = this
+	
 	this.debugEnabled = true
 	this.videoScaleDown = 2
-
-	var modelSize = 35.0; // millimeter
+	this.modelSize = 35.0; // millimeter
 
 	var canvasElement = document.createElement('canvas')
 	var context = canvasElement.getContext("2d");
@@ -38,7 +38,7 @@ THREEx.JsArucoMarker2 = function(){
 			canvasElement.width = videoElement.videoWidth/_this.videoScaleDown
 			canvasElement.height = videoElement.videoHeight/_this.videoScaleDown
 		// if domElement is a image
-	}else if( videoElement instanceof HTMLImageElement ){
+		}else if( videoElement instanceof HTMLImageElement ){
 			if( videoElement.naturalWidth === 0 ){
 				return []				
 			}
@@ -79,7 +79,7 @@ THREEx.JsArucoMarker2 = function(){
 			})
 		}
 		// compute the pose from the canvas
-		var posit = new POS.Posit(modelSize, canvasElement.width);
+		var posit = new POS.Posit(this.modelSize, canvasElement.width);
 		var pose = posit.pose(corners);
 		console.assert(pose !== null)
 
@@ -89,9 +89,9 @@ THREEx.JsArucoMarker2 = function(){
 		var rotation = pose.bestRotation
 		var translation = pose.bestTranslation
 
-		object3d.scale.x = modelSize;
-		object3d.scale.y = modelSize;
-		object3d.scale.z = modelSize;
+		object3d.scale.x = this.modelSize;
+		object3d.scale.y = this.modelSize;
+		object3d.scale.z = this.modelSize;
 
 		object3d.rotation.x = -Math.asin(-rotation[1][2]);
 		object3d.rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);

@@ -14,6 +14,7 @@
 <script src='../src/threex.imagegrabbing.js'></script>
 <script src='../src/threex.jsarucomarker2.js'></script>
 
+
 <body style='margin: 0px; overflow: hidden; text-align:center;'><script>
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Init
@@ -32,15 +33,27 @@
 
 	// init scene and camera
 	var scene = new THREE.Scene()
-	var camera	= new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 1000);
+
+	var camera	= new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 10000);
 	camera.position.z = 2;
 
 	//////////////////////////////////////////////////////////////////////////////////
-	//		add an object in the scene
+	//		init APP.Player()
+	//////////////////////////////////////////////////////////////////////////////////
+	var appPlayer = new APP.Player();
+	appPlayer.setRenderer(renderer)
+	appPlayer.setScene(scene)
+	appPlayer.setCamera(camera)
+	// appPlayer.dom = render
+	appPlayer.setSize( window.innerWidth, window.innerHeight );
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		init a scene in player
 	//////////////////////////////////////////////////////////////////////////////////
 
 	// add a rotating earth to the scene
 	;(function(){
+return
 		// add a torus
 		var geometry = new THREE.SphereGeometry(0.5, 32, 16, Math.PI)
 		var material = new THREE.MeshBasicMaterial( {
@@ -48,14 +61,23 @@
 		})
 		var mesh = new THREE.Mesh(geometry, material);
 		scene.add( mesh );
-		// mesh.rotation.z = Math.PI/2
-		onRenderFcts.push(function(now, delta){
-			mesh.rotation.x += 0.1 * delta/1000 * Math.PI
+
+
+		var scriptText = function(){
+			function update(event){
+				this.rotation.x += 0.1 * event.delta/1000 * Math.PI 
+			}			
+		}.toString().split('\n').slice(1, -1).join('\n')
+
+		appPlayer.initScript(mesh, {
+			source : scriptText
 		})
 	})()
-	
+
+
 	// add a awesome logo to the scene
 	;(function(){
+// return
 		var material = new THREE.SpriteMaterial({
 			map: THREE.ImageUtils.loadTexture( 'images/awesome.png' ),
 		});
@@ -64,10 +86,56 @@
 		object3d.scale.set( 4, 4, 1 );
 		scene.add(object3d)
 	})()
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	//		attempts to load an app from the player
+	//////////////////////////////////////////////////////////////////////////////////
+	
+	;(function(){
+// return
+		var loader = new THREE.XHRLoader();
+		// var appUrl = '../vendor/three.js/editor/examples/arkanoid.app.json'
+		// var appUrl = '../vendor/three.js/editor/examples/camera.app.json'
+		// var appUrl = '../vendor/three.js/editor/examples/particles.app.json'
+		// var appUrl = '../vendor/three.js/editor/examples/pong.app.json'
+		var appUrl = 'torusknot_rotating.app.json'
+		loader.load(appUrl, function (text) {
+			
+			console.dir(appPlayer.dom)
+			document.body.removeChild(appPlayer.dom)
 
-	// add a mesh to the scene to help debug
+			var json = JSON.parse(text);
+			json.project = {
+				vr: false
+			}
+			appPlayer.load(json)
+			
+			appPlayer.setSize(window.innerWidth, window.innerHeight)
+			document.body.appendChild(appPlayer.dom)
+			appPlayer.play();
+
+			scene = appPlayer.getScene()
+
+			appPlayer.setCamera(camera)
+
+			
+		});	
+	})()
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		add an object in the scene
+	//////////////////////////////////////////////////////////////////////////////////
+
 	var mesh = new THREE.AxisHelper
 	scene.add( mesh );
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Launch the player
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// launch the player
+	appPlayer.play()
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the whole thing on the page
@@ -75,21 +143,14 @@
 
 	// handle window resize
 	window.addEventListener('resize', function(){
-		renderer.setSize( window.innerWidth, window.innerHeight )
-		camera.aspect	= window.innerWidth / window.innerHeight
-		camera.updateProjectionMatrix()
+		appPlayer.setSize( window.innerWidth, window.innerHeight );
 	}, false)
 
 	// set the scene as visible 
 	scene.visible	= false
 
-	// render the scene
-	onRenderFcts.push(function(){
-		renderer.render( scene, camera );
-	})
-
 	// run the rendering loop
-	var lastTimeMsec = performance.now()
+	var lastTimeMsec= null
 	requestAnimationFrame(function animate(nowMsec){
 		// keep looping
 		requestAnimationFrame( animate );
@@ -97,8 +158,6 @@
 		onRenderFcts.forEach(function(onRenderFct){
 			onRenderFct(nowMsec, nowMsec - lastTimeMsec)
 		})
-		// update
-		lastTimeMsec	= nowMsec
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -109,8 +168,9 @@
 	// init the marker recognition
 	var jsArucoMarker	= new THREEx.JsArucoMarker2()
 
+	
 	// init the image source grabbing
-	if( false ){
+	if( true ){
 		var videoGrabbing = new THREEx.WebcamGrabbing()
 		jsArucoMarker.videoScaleDown = 2
 	}else if( true ){
@@ -118,9 +178,10 @@
 		jsArucoMarker.videoScaleDown = 10		
 	}else console.assert(false)
 
-	// attach the videoGrabbing.domElement to the body
+
         document.body.appendChild(videoGrabbing.domElement)
 
+	
 	// process the image source with the marker recognition
 	onRenderFcts.push(function(){
 		var domElement	= videoGrabbing.domElement
@@ -134,6 +195,9 @@
 			if( marker.id !== 265 )	return
 
 			jsArucoMarker.markerToObject3D(marker, object3d)
+
+			object3d.scale.set(1,1,1)
+				.multiplyScalar(1/10)
 
 			object3d.visible = true
 		})
