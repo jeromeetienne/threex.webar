@@ -9,9 +9,6 @@ THREEx.ImageGrabbing = function(){
 	// TODO make this url tunable
 	domElement.src	= 'images/IMG_20150606_200552-small.jpg'
 
-	// TODO move that outside of this class
-        document.body.appendChild(domElement)
-
 	domElement.style.zIndex = -1;
         domElement.style.position = 'absolute'
 

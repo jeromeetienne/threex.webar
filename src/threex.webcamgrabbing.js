@@ -15,7 +15,6 @@ THREEx.WebcamGrabbing = function(){
         // create video element
         var domElement        = document.createElement('video')
         domElement.setAttribute('autoplay', true)
-        document.body.appendChild(domElement)
 
 	// window.domElement = video
 	domElement.style.zIndex = -1;

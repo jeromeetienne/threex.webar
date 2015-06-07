@@ -32,7 +32,6 @@
 
 	// init scene and camera
 	var scene = new THREE.Scene()
-
 	var camera	= new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 1000);
 	camera.position.z = 2;
 
@@ -40,6 +39,7 @@
 	//		add an object in the scene
 	//////////////////////////////////////////////////////////////////////////////////
 
+	// add a rotating earth to the scene
 	;(function(){
 		// add a torus
 		var geometry = new THREE.SphereGeometry(0.5, 32, 16, Math.PI)
@@ -50,10 +50,22 @@
 		scene.add( mesh );
 		// mesh.rotation.z = Math.PI/2
 		onRenderFcts.push(function(now, delta){
-			mesh.rotation.y += 0.1 * delta/1000 * Math.PI
+			mesh.rotation.x += 0.1 * delta/1000 * Math.PI
 		})
 	})()
+	
+	// add a awesome logo to the scene
+	;(function(){
+		var material = new THREE.SpriteMaterial({
+			map: THREE.ImageUtils.loadTexture( 'images/awesome.png' ),
+		});
+		var geometry = new THREE.BoxGeometry(1,1,1)
+		var object3d = new THREE.Sprite(material );
+		object3d.scale.set( 4, 4, 1 );
+		scene.add(object3d)
+	})()
 
+	// add a mesh to the scene to help debug
 	var mesh = new THREE.AxisHelper
 	scene.add( mesh );
 
@@ -90,25 +102,25 @@
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
-	//		shim party
-	//////////////////////////////////////////////////////////////////////////////////
-
-
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Comments
+	//		Do the Augmented Reality Upgrade
 	//////////////////////////////////////////////////////////////////////////////////
 
 
 	// init the marker recognition
 	var jsArucoMarker	= new THREEx.JsArucoMarker2()
 
-
 	// init the image source grabbing
-	// var videoGrabbing = new THREEx.WebcamGrabbing()
-	// jsArucoMarker.videoScaleDown = 2
-	
-	var videoGrabbing = new THREEx.ImageGrabbing()
-	jsArucoMarker.videoScaleDown = 10
+	if( false ){
+		var videoGrabbing = new THREEx.WebcamGrabbing()
+		jsArucoMarker.videoScaleDown = 2
+	}else if( true ){
+		var videoGrabbing = new THREEx.ImageGrabbing()
+		jsArucoMarker.videoScaleDown = 10		
+	}else console.assert(false)
+
+	// attach the videoGrabbing.domElement to the body
+        document.body.appendChild(videoGrabbing.domElement)
+
 
 	// process the image source with the marker recognition
 	onRenderFcts.push(function(){
