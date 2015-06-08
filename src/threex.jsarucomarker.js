@@ -1,13 +1,14 @@
 var THREEx = THREEx || {}
 
 /**
- * Grab camera
+ * Handle jsaruco markers
  */
 THREEx.JsArucoMarker = function(){
-	var jsArucoMarker = this
-	this.markerId	= 265
+	var _this = this
+
 	this.debugEnabled = true
-	var modelSize = 35.0; // millimeter
+	this.videoScaleDown = 2
+	this.modelSize = 35.0; // millimeter
 
 	var canvasElement = document.createElement('canvas')
 	var context = canvasElement.getContext("2d");
@@ -21,26 +22,32 @@ THREEx.JsArucoMarker = function(){
 	}
 
 	/**
-	 * update the 
-	 * @param {[type]} srcElement [description]
-	 * @param {[type]} object3d   [description]
-	 * @return {[type]} [description]
+	 * Detect Marker in a videoElement or imageElement
+	 *
+	 * @param {HTMLVideoElement|HTMLImageElement} videoElement - the source element
+	 * @return {Object[]} - array of found markers
 	 */
-	this.update	= function(srcElement, object3d){		
-		if( srcElement instanceof HTMLVideoElement ){
-			// if no new image for srcElement do nothing
-			if (srcElement.readyState !== srcElement.HAVE_ENOUGH_DATA) return
+	this.detectMarkers	= function(videoElement){
+		// if domElement is a video
+		if( videoElement instanceof HTMLVideoElement ){
+			// if no new image for videoElement do nothing
+			if (videoElement.readyState !== videoElement.HAVE_ENOUGH_DATA){
+				return []
+			}
 
-			canvasElement.width = srcElement.videoWidth/2
-			canvasElement.height = srcElement.videoHeight/2
-		}else if( srcElement instanceof HTMLImageElement ){
-			if( srcElement.naturalWidth === 0 )	return
-			canvasElement.width = srcElement.naturalWidth/10
-			canvasElement.height = srcElement.naturalHeight/10
+			canvasElement.width = videoElement.videoWidth/_this.videoScaleDown
+			canvasElement.height = videoElement.videoHeight/_this.videoScaleDown
+		// if domElement is a image
+		}else if( videoElement instanceof HTMLImageElement ){
+			if( videoElement.naturalWidth === 0 ){
+				return []
+			}
+			canvasElement.width = videoElement.naturalWidth/_this.videoScaleDown
+			canvasElement.height = videoElement.naturalHeight/_this.videoScaleDown
 		}else console.assert(false)
 
-		// get imageData from srcElement
-		context.drawImage(srcElement, 0, 0, canvasElement.width, canvasElement.height);
+		// get imageData from videoElement
+		context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
 		var imageData = context.getImageData(0, 0, canvasElement.width, canvasElement.height);
 
 		// detect markers
@@ -52,40 +59,39 @@ THREEx.JsArucoMarker = function(){
 			drawDebug(markers, canvasElement)
 		}
 
-		object3d.visible = false
-
-		// see if this.markerId has been found
-		markers.forEach(function(marker){
-			if( marker.id !== jsArucoMarker.markerId )	return
-
-			// move the object3d
-			var pose = markerToPose(marker)
-			console.assert(pose !== null)
-			poseJsarucoToObject3D(pose, object3d);
-			object3d.visible = true
-		})
+		// return the result
+		return markers
 	}
-	
-	// this.markerToObject3D = function(marker, object3d){
-	// 	// move the object3d
-	// 	var pose = markerToPose(marker)
-	// 	console.assert(pose !== null)
-	// 	poseJsarucoToObject3D(pose, object3d);		
-	// }
 
-	return
+	/**
+	 * convert a jsaruco marker to a THREE.Object3D
+	 *
+	 * @param {Object[]} marker   - a found marker
+	 * @param {THREE.Object3D} object3d - the object3d to move
+	 */
+	this.markerToObject3D = function(marker, object3d){
+		// convert corners coordinate - not sure why
+		var corners = []//marker.corners;
+		for (var i = 0; i < marker.corners.length; ++ i){
+			corners.push({
+				x : marker.corners[i].x - (canvasElement.width / 2),
+				y : (canvasElement.height / 2) - marker.corners[i].y,
+			})
+		}
+		// compute the pose from the canvas
+		var posit = new POS.Posit(this.modelSize, canvasElement.width);
+		var pose = posit.pose(corners);
+		console.assert(pose !== null)
 
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Comments
-	//////////////////////////////////////////////////////////////////////////////////
-
-	function poseJsarucoToObject3D(pose, object3d){
+		//////////////////////////////////////////////////////////////////////////////////
+		//		Translate pose to THREE.Object3D
+		//////////////////////////////////////////////////////////////////////////////////
 		var rotation = pose.bestRotation
 		var translation = pose.bestTranslation
 
-		object3d.scale.x = modelSize;
-		object3d.scale.y = modelSize;
-		object3d.scale.z = modelSize;
+		object3d.scale.x = this.modelSize;
+		object3d.scale.y = this.modelSize;
+		object3d.scale.z = this.modelSize;
 
 		object3d.rotation.x = -Math.asin(-rotation[1][2]);
 		object3d.rotation.y = -Math.atan2(rotation[0][2], rotation[2][2]);
@@ -96,23 +102,11 @@ THREEx.JsArucoMarker = function(){
 		object3d.position.z = -translation[2];
 	}
 
-	function markerToPose(marker){
-		// convert corners coordinate - not sure why
-		var corners = []//marker.corners;
-		for (var i = 0; i < marker.corners.length; ++ i){
-			corners.push({
-				x : marker.corners[i].x - (canvasElement.width / 2),
-				y : (canvasElement.height / 2) - marker.corners[i].y,
-			})
-		}
-		// compute the pose
-		var posit = new POS.Posit(modelSize, canvasElement.width);
-		var pose = posit.pose(corners);
+	return
 
-		// return the computed pose
-		return pose
-	}
-
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Comments
+	//////////////////////////////////////////////////////////////////////////////////
 
 	/**
 	* draw corners on a canvas - useful to debug

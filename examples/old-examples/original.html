@@ -3,12 +3,12 @@
 <head>
   <title>Augmented Reality</title>
 
-  <script src='../vendor/three.js/build/three.js'></script>
+  <script src='../../vendor/three.js/build/three.js'></script>
 
-  <script type="text/javascript" src="../vendor/js-aruco/svd.js"></script> 
-  <script type="text/javascript" src="../vendor/js-aruco/posit1.js"></script> 
-  <script type="text/javascript" src="../vendor/js-aruco/cv.js"></script> 
-  <script type="text/javascript" src="../vendor/js-aruco/aruco.js"></script> 
+  <script type="text/javascript" src="../../vendor/js-aruco/svd.js"></script> 
+  <script type="text/javascript" src="../../vendor/js-aruco/posit1.js"></script> 
+  <script type="text/javascript" src="../../vendor/js-aruco/cv.js"></script> 
+  <script type="text/javascript" src="../../vendor/js-aruco/aruco.js"></script> 
 
   <script>
     var video, canvas, context, imageData, detector, posit;
@@ -191,7 +191,7 @@
     function createModel(){
       var object = new THREE.Object3D(),
           geometry = new THREE.SphereGeometry(0.5, 15, 15, Math.PI),
-          texture = THREE.ImageUtils.loadTexture("images/earth.jpg"),
+          texture = THREE.ImageUtils.loadTexture("../images/earth.jpg"),
           material = new THREE.MeshBasicMaterial( {map: texture} ),
           mesh = new THREE.Mesh(geometry, material);
 
