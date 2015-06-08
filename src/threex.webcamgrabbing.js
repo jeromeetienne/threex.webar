@@ -24,6 +24,7 @@ THREEx.WebcamGrabbing = function(){
 	domElement.style.left = '50%'
 	domElement.style.marginRight = '50%'
 	domElement.style.transform = 'translate(-50%, -50%)'
+	domElement.style.minWidth = '100%'
 
         /**
          * Resize video element.

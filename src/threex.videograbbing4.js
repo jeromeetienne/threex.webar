@@ -30,7 +30,7 @@ THREEx.VideoGrabbing4 = function(options){
 		this.domElement = domElement
 		return
 	}
-	
+
 	console.assert(sourceType === 'video')
 
 	//////////////////////////////////////////////////////////////////////////////////
