@@ -65,8 +65,8 @@ return
 
 		var scriptText = function(){
 			function update(event){
-				this.rotation.x += 0.1 * event.delta/1000 * Math.PI 
-			}			
+				this.rotation.x += 0.1 * event.delta/1000 * Math.PI
+			}
 		}.toString().split('\n').slice(1, -1).join('\n')
 
 		appPlayer.initScript(mesh, {
@@ -86,12 +86,12 @@ return
 		object3d.scale.set( 4, 4, 1 );
 		scene.add(object3d)
 	})()
-	
-	
+
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//		attempts to load an app from the player
 	//////////////////////////////////////////////////////////////////////////////////
-	
+
 	;(function(){
 // return
 		var loader = new THREE.XHRLoader();
@@ -99,9 +99,9 @@ return
 		// var appUrl = '../vendor/three.js/editor/examples/camera.app.json'
 		// var appUrl = '../vendor/three.js/editor/examples/particles.app.json'
 		// var appUrl = '../vendor/three.js/editor/examples/pong.app.json'
-		var appUrl = 'torusknot_rotating.app.json'
+		var appUrl = 'apps/torusknot_rotating.app.json'
 		loader.load(appUrl, function (text) {
-			
+
 			console.dir(appPlayer.dom)
 			document.body.removeChild(appPlayer.dom)
 
@@ -110,7 +110,7 @@ return
 				vr: false
 			}
 			appPlayer.load(json)
-			
+
 			appPlayer.setSize(window.innerWidth, window.innerHeight)
 			document.body.appendChild(appPlayer.dom)
 			appPlayer.play();
@@ -119,8 +119,8 @@ return
 
 			appPlayer.setCamera(camera)
 
-			
-		});	
+
+		});
 	})()
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -146,7 +146,7 @@ return
 		appPlayer.setSize( window.innerWidth, window.innerHeight );
 	}, false)
 
-	// set the scene as visible 
+	// set the scene as visible
 	scene.visible	= false
 
 	// run the rendering loop
@@ -168,26 +168,26 @@ return
 	// init the marker recognition
 	var jsArucoMarker	= new THREEx.JsArucoMarker2()
 
-	
+
 	// init the image source grabbing
 	if( true ){
 		var videoGrabbing = new THREEx.WebcamGrabbing()
 		jsArucoMarker.videoScaleDown = 2
 	}else if( true ){
 		var videoGrabbing = new THREEx.ImageGrabbing()
-		jsArucoMarker.videoScaleDown = 10		
+		jsArucoMarker.videoScaleDown = 10
 	}else console.assert(false)
 
 
         document.body.appendChild(videoGrabbing.domElement)
 
-	
+
 	// process the image source with the marker recognition
 	onRenderFcts.push(function(){
 		var domElement	= videoGrabbing.domElement
 		var markers	= jsArucoMarker.detectMarkers(domElement)
 		var object3d	= scene
-		
+
 		object3d.visible = false
 
 		// see if this.markerId has been found

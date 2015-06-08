@@ -5,7 +5,7 @@ var THREEx = THREEx || {}
  */
 THREEx.JsArucoMarker2 = function(){
 	var _this = this
-	
+
 	this.debugEnabled = true
 	this.videoScaleDown = 2
 	this.modelSize = 35.0; // millimeter
@@ -23,11 +23,11 @@ THREEx.JsArucoMarker2 = function(){
 
 	/**
 	 * Detect Marker in a videoElement or imageElement
-	 * 
+	 *
 	 * @param {HTMLVideoElement|HTMLImageElement} videoElement - the source element
 	 * @return {Object[]} - array of found markers
 	 */
-	this.detectMarkers	= function(videoElement){		
+	this.detectMarkers	= function(videoElement){
 		// if domElement is a video
 		if( videoElement instanceof HTMLVideoElement ){
 			// if no new image for videoElement do nothing
@@ -40,7 +40,7 @@ THREEx.JsArucoMarker2 = function(){
 		// if domElement is a image
 		}else if( videoElement instanceof HTMLImageElement ){
 			if( videoElement.naturalWidth === 0 ){
-				return []				
+				return []
 			}
 			canvasElement.width = videoElement.naturalWidth/_this.videoScaleDown
 			canvasElement.height = videoElement.naturalHeight/_this.videoScaleDown
@@ -58,14 +58,14 @@ THREEx.JsArucoMarker2 = function(){
 		if( this.debugEnabled ){
 			drawDebug(markers, canvasElement)
 		}
-		
+
 		// return the result
 		return markers
 	}
-	
+
 	/**
 	 * convert a jsaruco marker to a THREE.Object3D
-	 * 
+	 *
 	 * @param {Object[]} marker   - a found marker
 	 * @param {THREE.Object3D} object3d - the object3d to move
 	 */
@@ -103,7 +103,7 @@ THREEx.JsArucoMarker2 = function(){
 	}
 
 	return
-	
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Comments
 	//////////////////////////////////////////////////////////////////////////////////

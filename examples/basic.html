@@ -54,7 +54,7 @@
 			mesh.rotation.x += 0.1 * delta/1000 * Math.PI
 		})
 	})()
-	
+
 	// add a awesome logo to the scene
 	;(function(){
 		var material = new THREE.SpriteMaterial({
@@ -81,7 +81,7 @@
 		camera.updateProjectionMatrix()
 	}, false)
 
-	// set the scene as visible 
+	// set the scene as visible
 	scene.visible	= false
 
 	// render the scene
@@ -116,10 +116,10 @@
 		jsArucoMarker.videoScaleDown = 10
 	}else if( false ){
 		var videoGrabbing = new THREEx.WebcamGrabbing()
-		jsArucoMarker.videoScaleDown = 2
+		jsArucoMarker.videoScaleDown = 3
 	}else if( true ){
 		var videoGrabbing = new THREEx.ImageGrabbing()
-		jsArucoMarker.videoScaleDown = 10		
+		jsArucoMarker.videoScaleDown = 10
 	}else console.assert(false)
 
 	// attach the videoGrabbing.domElement to the body
@@ -130,7 +130,7 @@
 		var domElement	= videoGrabbing.domElement
 		var markers	= jsArucoMarker.detectMarkers(domElement)
 		var object3d	= scene
-		
+
 		object3d.visible = false
 
 		// see if this.markerId has been found
