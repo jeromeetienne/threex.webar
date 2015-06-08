@@ -7,7 +7,7 @@
   - for that i need the canvas
   - thus i can keep the video behind
 - make the resolution of the camera tunable
-- make it work with a predefined video 
+- make it work with a predefined video
   - do that in threex.videoGrabbing
 - DONE make the scaleDown of the marker recognition tunable
 - DONE make it work with an image

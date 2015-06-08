@@ -12,6 +12,7 @@
 <!-- include some extensions -->
 <script src='../src/threex.webcamgrabbing.js'></script>
 <script src='../src/threex.imagegrabbing.js'></script>
+<script src='../src/threex.videofilegrabbing.js'></script>
 <script src='../src/threex.jsarucomarker2.js'></script>
 
 <body style='margin: 0px; overflow: hidden; text-align:center;'><script>
@@ -111,6 +112,9 @@
 
 	// init the image source grabbing
 	if( false ){
+		var videoGrabbing = new THREEx.VideoFileGrabbing()
+		jsArucoMarker.videoScaleDown = 10
+	}else if( false ){
 		var videoGrabbing = new THREEx.WebcamGrabbing()
 		jsArucoMarker.videoScaleDown = 2
 	}else if( true ){
