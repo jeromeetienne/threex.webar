@@ -6,11 +6,13 @@
 <!-- include js-aruco -->
 <script src='../vendor/js-aruco/svd.js'></script>
 <script src='../vendor/js-aruco/posit1-patched.js'></script>
+<script src='../vendor/js-aruco/posit2.js'></script>
 <script src='../vendor/js-aruco/cv.js'></script>
 <script src='../vendor/js-aruco/aruco.js'></script>
 
 <!-- include some extensions -->
 <script src='../src/threex.webcamgrabbing.js'></script>
+<script src='../src/threex.webcamgrabbing2.js'></script>
 <script src='../src/threex.imagegrabbing.js'></script>
 <script src='../src/threex.videograbbing.js'></script>
 <script src='../src/threex.jsarucomarker.js'></script>
@@ -42,6 +44,7 @@
 
 	// add a rotating earth to the scene
 	;(function(){
+// return
 		// add a torus
 		var geometry = new THREE.SphereGeometry(0.5, 32, 16, Math.PI)
 		var material = new THREE.MeshBasicMaterial( {
@@ -57,6 +60,7 @@
 
 	// add a awesome logo to the scene
 	;(function(){
+// return
 		var material = new THREE.SpriteMaterial({
 			map: THREE.ImageUtils.loadTexture( 'images/awesome.png' ),
 		});
@@ -111,12 +115,12 @@
 	var jsArucoMarker	= new THREEx.JsArucoMarker()
 
 	// init the image source grabbing
-	if( true ){
+	if( false ){
 		var videoGrabbing = new THREEx.VideoGrabbing()
-		jsArucoMarker.videoScaleDown = 10
-	}else if( false ){
-		var videoGrabbing = new THREEx.WebcamGrabbing()
-		jsArucoMarker.videoScaleDown = 3
+		jsArucoMarker.videoScaleDown = 5
+	}else if( true ){
+		var videoGrabbing = new THREEx.WebcamGrabbing2()
+		jsArucoMarker.videoScaleDown = 2
 	}else if( true ){
 		var videoGrabbing = new THREEx.ImageGrabbing()
 		jsArucoMarker.videoScaleDown = 10
