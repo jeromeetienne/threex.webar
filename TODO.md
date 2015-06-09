@@ -3,7 +3,7 @@
 - require to get a 640x480 resolution
   - the only one seems to get working for now
   - see https://www.simpl.info/getusermedia/constraints/
-- noce apps: do an apps which get the macbook camera 
+- note apps: do an apps which get the macbook camera 
   - people move their phone on front of it
   - this draw laser particle
 

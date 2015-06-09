@@ -42,33 +42,44 @@
 
 	// add a rotating earth to the scene
 	;(function(){
-		// add a torus
+return
 		var geometry = new THREE.SphereGeometry(0.5, 32, 16, Math.PI)
 		var material = new THREE.MeshBasicMaterial( {
 			map: THREE.ImageUtils.loadTexture("images/earth.jpg")
 		})
 		var mesh = new THREE.Mesh(geometry, material);
 		scene.add( mesh );
-		// mesh.rotation.z = Math.PI/2
 		onRenderFcts.push(function(now, delta){
 			mesh.rotation.x += 0.1 * delta/1000 * Math.PI
 		})
 	})()
 
+	// add some debug display
+	;(function(){
+		var geometry = new THREE.PlaneGeometry(1,1,10,10)
+		var material = new THREE.MeshBasicMaterial( {
+			wireframe : true
+		})
+		var mesh = new THREE.Mesh(geometry, material);
+		scene.add( mesh );
+
+		var mesh = new THREE.AxisHelper
+		scene.add( mesh );
+	})()
+
 	// add a awesome logo to the scene
 	;(function(){
+return
 		var material = new THREE.SpriteMaterial({
 			map: THREE.ImageUtils.loadTexture( 'images/awesome.png' ),
 		});
+		material.map.minFilter = THREE.LinearFilter
 		var geometry = new THREE.BoxGeometry(1,1,1)
 		var object3d = new THREE.Sprite(material );
 		object3d.scale.set( 4, 4, 1 );
 		scene.add(object3d)
 	})()
 
-	// add a mesh to the scene to help debug
-	var mesh = new THREE.AxisHelper
-	scene.add( mesh );
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the whole thing on the page
@@ -111,12 +122,12 @@
 	var jsArucoMarker	= new THREEx.JsArucoMarker()
 
 	// init the image source grabbing
-	if( true ){
+	if( false ){
 		var videoGrabbing = new THREEx.VideoGrabbing()
 		jsArucoMarker.videoScaleDown = 10
-	}else if( true ){
+	}else if( false ){
 		var videoGrabbing = new THREEx.WebcamGrabbing()
-		jsArucoMarker.videoScaleDown = 3
+		jsArucoMarker.videoScaleDown = 2
 	}else if( true ){
 		var videoGrabbing = new THREEx.ImageGrabbing()
 		jsArucoMarker.videoScaleDown = 10

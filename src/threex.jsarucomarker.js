@@ -8,7 +8,7 @@ THREEx.JsArucoMarker = function(){
 
 	this.debugEnabled = true
 	this.videoScaleDown = 2
-	this.modelSize = 35.0; // millimeter
+	this.modelSize = 35.0 // millimeter
 
 	var canvasElement = document.createElement('canvas')
 	var context = canvasElement.getContext("2d");
@@ -42,6 +42,7 @@ THREEx.JsArucoMarker = function(){
 			if( videoElement.naturalWidth === 0 ){
 				return []
 			}
+
 			canvasElement.width = videoElement.naturalWidth/_this.videoScaleDown
 			canvasElement.height = videoElement.naturalHeight/_this.videoScaleDown
 		}else console.assert(false)
