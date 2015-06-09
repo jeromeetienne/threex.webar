@@ -137,9 +137,11 @@ return
         document.body.appendChild(videoGrabbing.domElement)
 
 	// process the image source with the marker recognition
+	var previousMarkers	= []
 	onRenderFcts.push(function(){
 		var domElement	= videoGrabbing.domElement
 		var markers	= jsArucoMarker.detectMarkers(domElement)
+
 		var object3d	= scene
 
 		object3d.visible = false
@@ -152,5 +154,30 @@ return
 
 			object3d.visible = true
 		})
+
+		var detectedMarkerIds	= markers.map(function(marker){
+			return marker.id
+		})
+
+		detectedMarkerIds.forEach(function(markerId){
+			var wasPresent	= previousMarkers.indexOf(markerId) !== -1 ? true : false
+			if( wasPresent === true )	return
+
+			// var event = new Event('markerAppeared')
+			// window.body.dispatchEvent(event);
+			console.log('markerAppeared')
+		})
+
+
+		previousMarkers.forEach(function(marker){
+			var isPresent	= detectedMarkerIds.indexOf(marker) !== -1 ? true : false
+			if( isPresent === true )	return
+
+			console.log('markerDisappeared')
+			var event = new Event('markerIdDisappeared')
+			// window.body.dispatchEvent(event);
+		})
+
+		previousMarkers	= detectedMarkers
 	})
 </script></body>
