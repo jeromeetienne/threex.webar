@@ -101,16 +101,16 @@ return
 	})
 
 	// run the rendering loop
-	var lastTimeMsec = performance.now()
-	requestAnimationFrame(function animate(nowMsec){
-		// keep looping
+	var previousTime = performance.now()
+	requestAnimationFrame(function animate(now){
+
 		requestAnimationFrame( animate );
-		// call each update function
+
 		onRenderFcts.forEach(function(onRenderFct){
-			onRenderFct(nowMsec, nowMsec - lastTimeMsec)
+			onRenderFct(now, now - previousTime)
 		})
-		// update
-		lastTimeMsec	= nowMsec
+
+		previousTime	= nowMsec
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
