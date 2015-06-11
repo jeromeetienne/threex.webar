@@ -69,14 +69,14 @@ return
 
 	// add a awesome logo to the scene
 	;(function(){
-// return
+return
 		var material = new THREE.SpriteMaterial({
 			map: THREE.ImageUtils.loadTexture( 'images/awesome.png' ),
 		});
 		material.map.minFilter = THREE.LinearFilter
 		var geometry = new THREE.BoxGeometry(1,1,1)
 		var object3d = new THREE.Sprite(material );
-		object3d.scale.set( 1, 1, 1 );
+		object3d.scale.set( 4, 4, 1 );
 		scene.add(object3d)
 	})()
 
@@ -101,16 +101,16 @@ return
 	})
 
 	// run the rendering loop
-	var previousTime = performance.now()
-	requestAnimationFrame(function animate(now){
-
+	var lastTimeMsec = performance.now()
+	requestAnimationFrame(function animate(nowMsec){
+		// keep looping
 		requestAnimationFrame( animate );
-
+		// call each update function
 		onRenderFcts.forEach(function(onRenderFct){
-			onRenderFct(now, now - previousTime)
+			onRenderFct(nowMsec, nowMsec - lastTimeMsec)
 		})
-
-		previousTime	= nowMsec
+		// update
+		lastTimeMsec	= nowMsec
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -137,9 +137,11 @@ return
         document.body.appendChild(videoGrabbing.domElement)
 
 	// process the image source with the marker recognition
+	var previousMarkers	= []
 	onRenderFcts.push(function(){
 		var domElement	= videoGrabbing.domElement
 		var markers	= jsArucoMarker.detectMarkers(domElement)
+
 		var object3d	= scene
 
 		object3d.visible = false
@@ -152,5 +154,30 @@ return
 
 			object3d.visible = true
 		})
+
+		var detectedMarkerIds	= markers.map(function(marker){
+			return marker.id
+		})
+
+		detectedMarkerIds.forEach(function(markerId){
+			var wasPresent	= previousMarkers.indexOf(markerId) !== -1 ? true : false
+			if( wasPresent === true )	return
+
+			// var event = new Event('markerAppeared')
+			// window.body.dispatchEvent(event);
+			console.log('markerAppeared')
+		})
+
+
+		previousMarkers.forEach(function(marker){
+			var isPresent	= detectedMarkerIds.indexOf(marker) !== -1 ? true : false
+			if( isPresent === true )	return
+
+			console.log('markerDisappeared')
+			var event = new Event('markerIdDisappeared')
+			// window.body.dispatchEvent(event);
+		})
+
+		previousMarkers	= detectedMarkers
 	})
 </script></body>
