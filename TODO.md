@@ -4,7 +4,11 @@
   - markerIdDisapeared
   - markerIdAppeared
 
-# 
+
+# How to code the UI
+- when the marker is detected
+  - destroy the UI if needed
+  - 
 
 ---
 

@@ -6,7 +6,7 @@ var THREEx = THREEx || {}
 THREEx.JsArucoMarker = function(){
 	var _this = this
 
-	this.debugEnabled = true
+	this.debugEnabled = false
 	this.videoScaleDown = 2
 	this.modelSize = 35.0 // millimeter
 

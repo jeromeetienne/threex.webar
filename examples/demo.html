@@ -15,6 +15,9 @@
 <script src='../src/threex.videograbbing.js'></script>
 <script src='../src/threex.jsarucomarker.js'></script>
 
+<script src='js/ui.image.js'></script>
+<script src='js/ui.youtube.js'></script>
+
 <body style='margin: 0px; overflow: hidden; text-align:center;'><script>
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Init
@@ -56,6 +59,7 @@ return
 
 	// add some debug display
 	;(function(){
+return
 		var geometry = new THREE.PlaneGeometry(1,1,10,10)
 		var material = new THREE.MeshBasicMaterial( {
 			wireframe : true
@@ -69,14 +73,14 @@ return
 
 	// add a awesome logo to the scene
 	;(function(){
-return
+// return
 		var material = new THREE.SpriteMaterial({
 			map: THREE.ImageUtils.loadTexture( 'images/awesome.png' ),
 		});
 		material.map.minFilter = THREE.LinearFilter
 		var geometry = new THREE.BoxGeometry(1,1,1)
 		var object3d = new THREE.Sprite(material );
-		object3d.scale.set( 4, 4, 1 );
+		object3d.scale.set( 2, 2, 1 );
 		scene.add(object3d)
 	})()
 
@@ -136,48 +140,59 @@ return
 	// attach the videoGrabbing.domElement to the body
         document.body.appendChild(videoGrabbing.domElement)
 
+
 	// process the image source with the marker recognition
-	var previousMarkers	= []
+	var markers	= []
 	onRenderFcts.push(function(){
 		var domElement	= videoGrabbing.domElement
-		var markers	= jsArucoMarker.detectMarkers(domElement)
-
-		var object3d	= scene
-
-		object3d.visible = false
-
-		// see if this.markerId has been found
-		markers.forEach(function(marker){
-			if( marker.id !== 265 )	return
-
-			jsArucoMarker.markerToObject3D(marker, object3d)
-
-			object3d.visible = true
-		})
-
-		var detectedMarkerIds	= markers.map(function(marker){
-			return marker.id
-		})
-
-		detectedMarkerIds.forEach(function(markerId){
-			var wasPresent	= previousMarkers.indexOf(markerId) !== -1 ? true : false
-			if( wasPresent === true )	return
-
-			// var event = new Event('markerAppeared')
-			// window.body.dispatchEvent(event);
-			console.log('markerAppeared')
-		})
-
-
-		previousMarkers.forEach(function(marker){
-			var isPresent	= detectedMarkerIds.indexOf(marker) !== -1 ? true : false
-			if( isPresent === true )	return
-
-			console.log('markerDisappeared')
-			var event = new Event('markerIdDisappeared')
-			// window.body.dispatchEvent(event);
-		})
-
-		previousMarkers	= detectedMarkers
+		markers	= jsArucoMarker.detectMarkers(domElement)
 	})
+
+
+	init_youtube(265, 'BmqmgsAYJiI')
+
+	init_youtube(32 , 'olLPR-SxsJ0')
+	init_youtube(60 , 'olLPR-SxsJ0')
+	init_youtube(175, 'olLPR-SxsJ0')
+	init_youtube(236, 'olLPR-SxsJ0')
+	init_youtube(42 , 'olLPR-SxsJ0')
+
+
+	function init_youtube(markerId, youtubeId){
+		var uiPopup	= null
+		var uiTimeout	= null
+
+		// process the image source with the marker recognition
+		onRenderFcts.push(function(){
+			// see if this.markerId has been found
+			var foundMarker	= null
+			markers.forEach(function(marker){
+				if( marker.id !== markerId )	return
+				foundMarker	= marker
+			})
+
+			// --
+			var object3d = scene
+			if( foundMarker !== null ){
+				jsArucoMarker.markerToObject3D(foundMarker, object3d)
+				object3d.visible = true
+			}else{
+				object3d.visible = false
+			}
+
+			// --
+			if( foundMarker !== null ){
+				if( uiPopup === null ){
+					// uiPopup	= new UI.ImagePopup('images/office/gaspard.jpg')
+					uiPopup	= new UI.YoutubePopup(youtubeId)
+					document.body.appendChild(uiPopup.domElement)
+				}
+				clearTimeout( uiTimeout )
+				uiTimeout = setTimeout(function(){
+					document.body.removeChild(uiPopup.domElement)
+					uiPopup	= null
+				}, 1000)
+			}
+		})
+	}
 </script></body>
