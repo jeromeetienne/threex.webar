@@ -17,6 +17,13 @@
     - android is supporting it
   - require webgl to display 3d
 
+- jsaruco is only recognizing this type of marker
+  - they are easy to recognize
+  - but they are ugly
+  - More elaborated libraries are able to recognize any images
+    - e.g. Vuforia/ARToolKit
+
+
 # Questions to answers
 - what is three.js
 - what is AR
@@ -32,8 +39,17 @@
 - what is supplied by the library
 - What examples can be done
   - provide suggestions of possible applications
-- it is possible to recognize any aruco marker
-  - each of them 
+- It is possible to recognize any aruco marker
+  - each of them got a marker id
+  - 1024 possible markers to recognize
+
+---
+
+- you can move the camera and the marker is static
+- you can move the marker in front a static camera
+  - May be localisation of moving objects
+  - like where is this tool/vehicule
+  -
 
 # Various Parts Of Coding Augmented Reality on the web
 - Step 1 - get data from the Reality

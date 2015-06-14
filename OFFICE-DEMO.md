@@ -30,7 +30,7 @@
 
 # DEMO 'Pre Coffe Morning'
 
-- META script is all in the kitchen
+- META script is all in the appartement kitchen
 - STORY
   - im no good before coffee
   - so i wrote the apps to help me
