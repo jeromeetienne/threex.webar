@@ -17,6 +17,7 @@
 
 <script src='js/ui.image.js'></script>
 <script src='js/ui.youtube.js'></script>
+<script src='js/ui.vine.js'></script>
 
 <body style='margin: 0px; overflow: hidden; text-align:center;'><script>
 	//////////////////////////////////////////////////////////////////////////////////
@@ -149,14 +150,75 @@ return
 	})
 
 
-	init_youtube(265, 'BmqmgsAYJiI')
+	// jerome
+	// init_youtube(42 , 'aU1vPpWhsLs')
+	init_vine(42, 'eOt15nITeT2')
 
-	init_youtube(32 , 'olLPR-SxsJ0')
-	init_youtube(60 , 'olLPR-SxsJ0')
-	init_youtube(175, 'olLPR-SxsJ0')
-	init_youtube(236, 'olLPR-SxsJ0')
-	init_youtube(42 , 'olLPR-SxsJ0')
+	// monica
+	// init_youtube(175, '3OJuDPW_vk8')
+	init_vine(175, 'eOtKtEVWrDA')
 
+	// gaspard
+	// init_youtube(60 , '-nNf6Xt23os')
+	init_vine(60, 'eOTA3nQrI05')
+
+	// andrea
+	init_vine(236, 'eOtX0T2P1dJ')
+	// init_youtube(236, '495qhR7_VPU')
+
+	// gaia
+	// init_youtube(32 , 'BmqmgsAYJiI')
+	init_vine(32, 'eOV2a2UZ9zM')
+
+
+
+	// process the image source with the marker recognition
+	onRenderFcts.push(function(){
+		var object3d = scene
+		if(  markers.length === 0 ){
+			object3d.visible = false
+			return
+		}
+
+		var foundMarker	= markers[0]
+	console.log('markerId', foundMarker.id)
+		jsArucoMarker.markerToObject3D(foundMarker, object3d)
+		object3d.visible = true
+	})
+
+// ---
+
+	function init_vine(markerId, vineId){
+		var uiPopup	= null
+		var uiTimeout	= null
+
+		// process the image source with the marker recognition
+		onRenderFcts.push(function(){
+			// see if this.markerId has been found
+			var foundMarker	= null
+			markers.forEach(function(marker){
+				console.log('markerId', marker.id)
+				if( marker.id !== markerId )	return
+				foundMarker	= marker
+			})
+
+			// --
+			if( foundMarker !== null ){
+				if( uiPopup === null ){
+					// uiPopup	= new UI.ImagePopup('images/office/gaspard.jpg')
+					uiPopup	= new UI.VinePopup(vineId)
+					document.body.appendChild(uiPopup.domElement)
+				}
+				clearTimeout( uiTimeout )
+				uiTimeout = setTimeout(function(){
+					document.body.removeChild(uiPopup.domElement)
+					uiPopup	= null
+				}, 1000)
+			}
+		})
+	}
+
+// ---------------------------
 
 	function init_youtube(markerId, youtubeId){
 		var uiPopup	= null
@@ -167,18 +229,10 @@ return
 			// see if this.markerId has been found
 			var foundMarker	= null
 			markers.forEach(function(marker){
+				console.log('markerId', marker.id)
 				if( marker.id !== markerId )	return
 				foundMarker	= marker
 			})
-
-			// --
-			var object3d = scene
-			if( foundMarker !== null ){
-				jsArucoMarker.markerToObject3D(foundMarker, object3d)
-				object3d.visible = true
-			}else{
-				object3d.visible = false
-			}
 
 			// --
 			if( foundMarker !== null ){

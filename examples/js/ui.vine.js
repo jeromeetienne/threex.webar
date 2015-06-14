@@ -1,13 +1,12 @@
 var UI = UI || {}
 
-UI.YoutubePopup	= function(youtubeId){
-
-	youtubeId	= youtubeId	|| 'BmqmgsAYJiI'
+UI.VinePopup	= function(vineId){
+	console.assert(typeof(vineId) === 'string')
 
 	var domElement	= document.createElement('iframe')
-	domElement.src	= "https://www.youtube.com/embed/"+youtubeId+"?autoplay=1"
-	domElement.width= "560"
-	domElement.height="315"
+	domElement.src	= "https://vine.co/v/"+vineId+"/embed/simple?audio=1"
+	domElement.width= "360"
+	domElement.height="360"
 	domElement.frameborder="0"
 	domElement.allowfullscreen=true
 
@@ -18,5 +17,5 @@ UI.YoutubePopup	= function(youtubeId){
         domElement.style.position = 'absolute'
         domElement.style.top = '0px'
         domElement.style.right = '0px'
-        domElement.style.width = '40%'
+        // domElement.style.width = '40%'
 }

@@ -21,7 +21,7 @@
 - interactive + contextual + spatialized
 - cool sounds when it pops up
 
-# TODO
+# marker + stories
 - print multiple markers
 - glue them on "Liege". easy to cut
 - stick them on walls with patafix

@@ -42,21 +42,28 @@
 
 	// add a rotating earth to the scene
 	;(function(){
-return
-		var geometry = new THREE.SphereGeometry(0.5, 32, 16, Math.PI)
-		var material = new THREE.MeshBasicMaterial( {
-			map: THREE.ImageUtils.loadTexture("images/earth.jpg")
+		var geometry = new THREE.BoxGeometry(1,1,1)
+		var material = new THREE.MeshNormalMaterial({
+			opacity	: 0.5,
+			// side: THREE.DoubleSide,
 		})
 		var mesh = new THREE.Mesh(geometry, material);
+		mesh.position.z = 0.5
 		scene.add( mesh );
-		onRenderFcts.push(function(now, delta){
-			mesh.rotation.x += 0.1 * delta/1000 * Math.PI
+
+		var geometry = new THREE.BoxGeometry(1,1,1)
+		var material = new THREE.MeshNormalMaterial({
+			opacity	: 0.5,
+			side: THREE.BackSide,
 		})
+		var mesh = new THREE.Mesh(geometry, material);
+		mesh.position.z = 0.5
+		scene.add( mesh );
 	})()
 
 	// add some debug display
 	;(function(){
-return
+// return
 		var geometry = new THREE.PlaneGeometry(1,1,10,10)
 		var material = new THREE.MeshBasicMaterial( {
 			wireframe : true
@@ -67,20 +74,6 @@ return
 		var mesh = new THREE.AxisHelper
 		scene.add( mesh );
 	})()
-
-	// add a awesome logo to the scene
-	;(function(){
-// return
-		var material = new THREE.SpriteMaterial({
-			map: THREE.ImageUtils.loadTexture( 'images/awesome.png' ),
-		});
-		material.map.minFilter = THREE.LinearFilter
-		var geometry = new THREE.BoxGeometry(1,1,1)
-		var object3d = new THREE.Sprite(material );
-		object3d.scale.set( 2, 2, 1 );
-		scene.add(object3d)
-	})()
-
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the whole thing on the page
@@ -111,7 +104,7 @@ return
 			onRenderFct(now, now - previousTime)
 		})
 
-		previousTime	= nowMsec
+		previousTime	= now
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +141,7 @@ return
 		// see if this.markerId has been found
 		markers.forEach(function(marker){
 
-			if( marker.id !== 265 )	return
+			// if( marker.id !== 265 )	return
 
 			jsArucoMarker.markerToObject3D(marker, object3d)
 
