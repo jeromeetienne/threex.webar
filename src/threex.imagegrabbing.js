@@ -17,6 +17,12 @@ THREEx.ImageGrabbing = function(){
 	domElement.style.marginRight = '50%'
 	domElement.style.transform = 'translate(-50%, -50%)'
 
+	domElement.style.maxWidth = '100%'
+	domElement.style.maxHeight = '100%'
+
+	domElement.style.width = 'auto'
+	domElement.style.height = 'auto'
+
 
 	// domElement.style.top = '0px'
 	// domElement.style.left = '0px'
