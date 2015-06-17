@@ -1,4 +1,5 @@
 # Demo Script
+- record it and publish it on box.com
 - DONE make hard markers
   - print a lot of marker with various marker.id
   - glue them on cardboard

@@ -10,6 +10,7 @@ output: index.html
 
 - Lead for Three.js Team
 - Daqri Office in Dublin
+- @jerome_etienne
 
 ---
 

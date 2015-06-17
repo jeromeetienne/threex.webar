@@ -1,5 +1,5 @@
 # Notes on how to write slides
-- pure web augemented Reality
+- pure web augmented Reality
 - pro/con of the augmented Reality on the web
   - less cpu efficient when running
   - easier/faster to code for web-developper
@@ -49,7 +49,8 @@
 - you can move the marker in front a static camera
   - May be localisation of moving objects
   - like where is this tool/vehicule
-  -
+
+---
 
 # Various Parts Of Coding Augmented Reality on the web
 - Step 1 - get data from the Reality
