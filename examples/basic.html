@@ -20,6 +20,7 @@
 <div id='info' style='position: absolute; top: 0px; width: 100%;font-family:arial; font-weight: bolder; padding-top: 5px;'>
 	Augmented Reality with <a href="http://threejs.org" target="_blank">three.js</a>
 	- works on desktop and mobile
+	- require <a href='https://get.webgl.org/'>WebGL</a> and <a href='http://caniuse.com/#feat=stream'>getUserMedia</a> Support
 	<br/>
 	Source:
 	<a class='webcam' href='javascript:void();'>webcam</a> -
@@ -28,7 +29,9 @@
 </div>
 
 <script>
-
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Handle ui button
+	//////////////////////////////////////////////////////////////////////////////////
 	document.querySelector('#info .webcam').addEventListener('click', function(event){
 		location.hash	= '#webcam'
 		location.reload()
@@ -68,31 +71,8 @@
 	//		add an object in the scene
 	//////////////////////////////////////////////////////////////////////////////////
 
-	// add a rotating earth to the scene
-	;(function(){
-return
-		var geometry = new THREE.BoxGeometry(1,1,1)
-		var material = new THREE.MeshNormalMaterial({
-			opacity	: 0.5,
-			// side: THREE.DoubleSide,
-		})
-		var mesh = new THREE.Mesh(geometry, material);
-		mesh.position.z = 0.5
-		scene.add( mesh );
-
-		var geometry = new THREE.BoxGeometry(1,1,1)
-		var material = new THREE.MeshNormalMaterial({
-			opacity	: 0.5,
-			side: THREE.BackSide,
-		})
-		var mesh = new THREE.Mesh(geometry, material);
-		mesh.position.z = 0.5
-		scene.add( mesh );
-	})()
-
 	// add some debug display
 	;(function(){
-// return
 		var geometry = new THREE.PlaneGeometry(1,1,10,10)
 		var material = new THREE.MeshBasicMaterial( {
 			wireframe : true
