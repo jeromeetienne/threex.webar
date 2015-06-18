@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<!-- include three.js -->
+<script src='../vendor/three.js/build/three.js'></script>
+<script src='../vendor/three.js/editor/js/libs/app.js'></script>
+
+<!-- include js-aruco -->
+<script src='../vendor/js-aruco/svd.js'></script>
+<script src='../vendor/js-aruco/posit1-patched.js'></script>
+<script src='../vendor/js-aruco/cv.js'></script>
+<script src='../vendor/js-aruco/aruco.js'></script>
+
+<!-- include some extensions -->
+<script src='../src/threex.webcamgrabbing.js'></script>
+<script src='../src/threex.imagegrabbing.js'></script>
+<script src='../src/threex.videograbbing.js'></script>
+<script src='../src/threex.jsarucomarker.js'></script>
+
+<script src='js/ui.badgesprite.js'></script>
+
+<body style='margin: 0px; overflow: hidden; text-align:center;'><script>
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Init
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// init renderer
+	var renderer	= new THREE.WebGLRenderer({
+		antialias	: true,
+		alpha		: true,
+	});
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	document.body.appendChild( renderer.domElement );
+
+	// array of functions for the rendering loop
+	var onRenderFcts = [];
+
+	// init scene and camera
+	var scene = new THREE.Scene()
+	var camera	= new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 1000);
+	camera.position.z = 2;
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		get Data
+	//////////////////////////////////////////////////////////////////////////////////
+	// @TODO make it an array
+	var dataBadges = {
+		person0:{
+			firstName	: 'Gaspard',
+			lastName	: 'Guillaume',
+			role            : 'industry',
+			id 		: 0,
+			avatar	        : '/examples/tmp/avatars/avatar0.jpg',
+		},
+		person1:{
+			firstName	: 'Pedro',
+			lastName	: 'Sanchez',
+			role            : 'Cleaner',
+			id 		: 1,
+			avatar	        : '/examples/tmp/avatars/avatar1.jpg',
+		},
+		person265:{
+			firstName	: 'Johny',
+			lastName	: 'Blue',
+			role            : 'designer',
+			id 		: 265,
+			avatar	        : '/examples/tmp/avatars/avatar.jpg',
+		}
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		add an object in the scene
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// Add Badge
+	var badgeSprite = new UI.BadgeSprite();
+	scene.add(badgeSprite)
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		render the whole thing on the page
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// handle window resize
+	window.addEventListener('resize', function(){
+		renderer.setSize( window.innerWidth, window.innerHeight )
+		camera.aspect	= window.innerWidth / window.innerHeight
+		camera.updateProjectionMatrix()
+	}, false)
+
+	// set the scene as visible
+	scene.visible	= false
+
+	// render the scene
+	onRenderFcts.push(function(){
+		renderer.render( scene, camera );
+	})
+
+	// run the rendering loop
+	var previousTime = performance.now()
+	requestAnimationFrame(function animate(now){
+
+		requestAnimationFrame( animate );
+
+		onRenderFcts.forEach(function(onRenderFct){
+			onRenderFct(now, now - previousTime)
+		})
+
+		previousTime	= now
+	})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Do the Augmented Reality Upgrade
+	//////////////////////////////////////////////////////////////////////////////////
+
+
+	// init the marker recognition
+	var jsArucoMarker	= new THREEx.JsArucoMarker()
+
+	// init the image source grabbing
+	if( false ){
+		var videoGrabbing = new THREEx.VideoGrabbing()
+		jsArucoMarker.videoScaleDown = 10
+	}else if( false ){
+		var videoGrabbing = new THREEx.WebcamGrabbing()
+		jsArucoMarker.videoScaleDown = 2
+	}else if( true ){
+		var videoGrabbing = new THREEx.ImageGrabbing()
+		jsArucoMarker.videoScaleDown = 10
+	}else console.assert(false)
+
+	// attach the videoGrabbing.domElement to the body
+        document.body.appendChild(videoGrabbing.domElement)
+
+
+	var previousPersonId = null;
+
+	// process the image source with the marker recognition
+	onRenderFcts.push(function(){
+		var domElement	= videoGrabbing.domElement
+		var markers	= jsArucoMarker.detectMarkers(domElement)
+		var object3d	= scene
+
+		object3d.visible = false
+
+		// see if this.markerId has been found
+		markers.forEach(function(marker){
+			if( dataBadges["person"+marker.id] === undefined ) 	return
+
+			if( marker.id !== previousPersonId ){
+
+			    	var info = dataBadges['person'+marker.id]
+			    	badgeSprite.draw(info);
+
+				previousPersonId = marker.id;
+			}
+			/**
+			 * @TODO support multiple markers
+			 */
+
+			jsArucoMarker.markerToObject3D(marker, object3d)
+
+			object3d.visible = true;
+		})
+	});
+</script></body>
