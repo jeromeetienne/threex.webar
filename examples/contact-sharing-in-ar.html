@@ -41,24 +41,24 @@
 	//////////////////////////////////////////////////////////////////////////////////
 	//		get Data
 	//////////////////////////////////////////////////////////////////////////////////
-	var dataBadges = [
+	var badgeInfos = [
 		{
-			firstName	: 'Gaspard',
-			lastName	: 'Guillaume',
+			firstName	: 'Mike',
+			lastName	: 'Newton',
 			role            : 'industry',
 			markerId	: 0,
 			avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-0.jpg',
 		},
 		{
-			firstName	: 'Pedro',
-			lastName	: 'Sanchez',
-			role            : 'Cleaner',
+			firstName	: 'Adam',
+			lastName	: 'Huxley',
+			role            : 'corporate',
 			markerId	: 1,
 			avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-1.jpg',
 		},
 		{
-			firstName	: 'Johny',
-			lastName	: 'Blue',
+			firstName	: 'Albert',
+			lastName	: 'Walton',
 			role            : 'designer',
 			markerId	: 265,
 			avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-265.jpg',
@@ -143,16 +143,16 @@
 
 		// see if this.markerId has been found
 		markers.forEach(function(marker){
-			var dataBadge = null
-			dataBadges.forEach(function(item){
+			var badgeInfo = null
+			badgeInfos.forEach(function(item){
 				if( item.markerId !== marker.id )	return
-				dataBadge = item
+				badgeInfo = item
 			})
 
-			if( dataBadge === null )	return
+			if( badgeInfo === null )	return
 
 			if( marker.id !== previousMarkerId ){
-			    	badgeSprite.draw(dataBadge);
+			    	badgeSprite.draw(badgeInfo);
 				previousMarkerId = marker.id;
 			}
 
