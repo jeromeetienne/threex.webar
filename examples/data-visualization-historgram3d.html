@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<!-- include three.js -->
+<script src='../vendor/three.js/build/three.js'></script>
+<script src='../vendor/three.js/editor/js/libs/app.js'></script>
+
+<!-- include js-aruco -->
+<script src='../vendor/js-aruco/svd.js'></script>
+<script src='../vendor/js-aruco/posit1-patched.js'></script>
+<script src='../vendor/js-aruco/cv.js'></script>
+<script src='../vendor/js-aruco/aruco.js'></script>
+
+<!-- include some extensions -->
+<script src='../src/threex.webcamgrabbing.js'></script>
+<script src='../src/threex.imagegrabbing.js'></script>
+<script src='../src/threex.videograbbing.js'></script>
+<script src='../src/threex.jsarucomarker.js'></script>
+
+<!-- Fonts -->
+<script src="fonts/gentilis_regular.typeface.js"></script>
+
+<body style='margin: 0px; overflow: hidden; text-align:center;'><script>
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Init
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// init renderer
+	var renderer	= new THREE.WebGLRenderer({
+		antialias	: true,
+		alpha		: true,
+	});
+	renderer.setSize( window.innerWidth, window.innerHeight );
+	document.body.appendChild( renderer.domElement );
+
+	// array of functions for the rendering loop
+	var onRenderFcts = [];
+
+	// init scene and camera
+	var scene = new THREE.Scene()
+	var camera	= new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.01, 1000);
+	camera.position.z = 2;
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		add lights in the scene
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var object3d	= new THREE.AmbientLight(0x101010)
+	object3d.name	= 'Ambient light'
+	scene.add(object3d)
+	var object3d	= new THREE.DirectionalLight('white', 0.225)
+	object3d.position.set(2.6,-3,1)
+	object3d.name	= 'Back light'
+	scene.add(object3d)
+	var object3d	= new THREE.DirectionalLight('white', 0.375)
+	object3d.position.set(-2, 0, -1)
+	object3d.name 	= 'Key light'
+	scene.add(object3d)
+	var object3d	= new THREE.DirectionalLight('white', 0.5*2)
+	object3d.position.set(3, -5, 3)
+	object3d.name	= 'Fill light'
+	scene.add(object3d)
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		add an object in the scene
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// add some debug display
+	;(function(){
+		var geometry = new THREE.PlaneGeometry(1,1,10,10)
+		var material = new THREE.MeshBasicMaterial( {
+			wireframe : true
+		})
+		var mesh = new THREE.Mesh(geometry, material);
+		scene.add( mesh );
+
+		var mesh = new THREE.AxisHelper
+		scene.add( mesh );
+	})()
+
+
+
+
+	// Add graphs and red lines
+	;(function(){
+		// add horizontal lines for graph
+		var material = new THREE.LineBasicMaterial({color: 0xff0000});
+		for (var i = 1; i < 8; i++) {
+			var geometry = new THREE.Geometry();
+			geometry.vertices.push(new THREE.Vector3(-0.9, 0.2, 0.2*i));
+			geometry.vertices.push(new THREE.Vector3(0.9, 0.2, 0.2*i));
+			var line = new THREE.Line(geometry, material);
+			scene.add( line );
+		};
+
+		// add vertical line for graph
+		var geometry = new THREE.Geometry();
+		geometry.vertices.push(new THREE.Vector3(-0.9, 0.2, 0));
+		geometry.vertices.push(new THREE.Vector3(-0.9, 0.2, 1.6));
+		var line = new THREE.Line(geometry, material);
+		scene.add( line );
+
+		addBar(-0.8,1.2);
+		addBar(-0.4,8);
+		addBar(0,6);
+		addBar(0.4,5);
+		addBar(0.8,7);
+
+		addText("Dublin",{x:-0.8,y:-0.2,z:0},{x:Math.PI*0.25, y:0, z:-Math.PI*0.25});
+		addText("Los Angeles",{x:-0.4,y:-0.2,z:0},{x:Math.PI*0.25, y:0, z:-Math.PI*0.25});
+		addText("Rome",{x:0,y:-0.2,z:0},{x:Math.PI*0.25, y:0, z:-Math.PI*0.25});
+		addText("Paris",{x:0.4,y:-0.2,z:0},{x:Math.PI*0.25, y:0, z:-Math.PI*0.25});
+		addText("Toronto",{x:0.8,y:-0.2,z:0},{x:Math.PI*0.25, y:0, z:-Math.PI*0.25});
+
+		addText("Summer",{x:-1.5,y:0,z:1.75},{x:Math.PI*0.5, y:0, z:0});
+		addText("Temperature",{x:-1.6,y:0,z:1.6},{x:Math.PI*0.5, y:0, z:0});
+
+
+		addText("5°C",{x:-1.4,y:0,z:0.2},{x:Math.PI*0.5, y:0, z:0});
+		addText("10°C",{x:-1.4,y:0,z:0.4},{x:Math.PI*0.5, y:0, z:0});
+		addText("15°C",{x:-1.4,y:0,z:0.6},{x:Math.PI*0.5, y:0, z:0});
+		addText("20°C",{x:-1.4,y:0,z:0.8},{x:Math.PI*0.5, y:0, z:0});
+		addText("25°C",{x:-1.4,y:0,z:1},{x:Math.PI*0.5, y:0, z:0});
+		addText("30°C",{x:-1.4,y:0,z:1.2},{x:Math.PI*0.5, y:0, z:0});
+		addText("35°C",{x:-1.4,y:0,z:1.4},{x:Math.PI*0.5, y:0, z:0});
+
+	})()
+	function addBar(posX,height){
+		var sizeBar = 0.2;
+		var highestHeight = 8+2;
+		var counter = 0;
+		var geometry = new THREE.BoxGeometry( sizeBar, sizeBar, sizeBar );
+		var material = new THREE.MeshPhongMaterial( { color:0x1054B5,reflectivity:1} );
+		var mesh = new THREE.Mesh( geometry, material );
+		mesh.position.x = posX;
+		mesh.position.y = 0;
+		mesh.position.z = 0;
+		myMatrix = new THREE.Matrix4().set(
+			1,0,0,0,
+			0,1,0,0,
+			0,0,1,sizeBar/2,
+			0,0,0,1
+		);
+		mesh.geometry.applyMatrix( myMatrix )
+		scene.add( mesh );
+
+		onRenderFcts.push(function(now, delta){
+			counter += 0.1 * delta/80;
+			if (counter<height) {
+				mesh.scale.z =counter;
+			};
+			if(counter>highestHeight){
+				counter = 0
+			}
+		})
+	}
+	// Add text
+	function addText(texte,pos,rot){
+		var materialFront = new THREE.MeshBasicMaterial( { color:0xff0000,reflectivity:1} );
+		var materialSide = new THREE.MeshBasicMaterial( { color:0x1054B5,reflectivity:1} );
+
+		var materialArray = [ materialFront, materialSide ];
+		var textGeom = new THREE.TextGeometry( texte, {
+			size: 0.1,
+			height: 0.02,
+			curveSegments: 4,
+			font: "gentilis",
+			bevelThickness: 0,
+			bevelSize: 0.02,
+			bevelEnabled: false,
+			material: 0,
+			extrudeMaterial: 1
+		});
+
+		var textMaterial = new THREE.MeshFaceMaterial(materialArray);
+		var textMesh = new THREE.Mesh(textGeom, textMaterial );
+
+		textMesh.position.set( pos.x, pos.y, pos.z);
+		textMesh.rotation.set(rot.x,rot.y,rot.z);
+		scene.add(textMesh);
+	}
+
+
+
+
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		render the whole thing on the page
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// handle window resize
+	window.addEventListener('resize', function(){
+		renderer.setSize( window.innerWidth, window.innerHeight )
+		camera.aspect	= window.innerWidth / window.innerHeight
+		camera.updateProjectionMatrix()
+	}, false)
+
+	// set the scene as visible
+	scene.visible	= false
+
+	// render the scene
+	onRenderFcts.push(function(){
+		renderer.render( scene, camera );
+	})
+
+	// run the rendering loop
+	var previousTime = performance.now()
+	requestAnimationFrame(function animate(now){
+
+		requestAnimationFrame( animate );
+
+		onRenderFcts.forEach(function(onRenderFct){
+			onRenderFct(now, now - previousTime)
+		})
+
+		previousTime	= now
+	})
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Do the Augmented Reality Upgrade
+	//////////////////////////////////////////////////////////////////////////////////
+
+
+	// init the marker recognition
+	var jsArucoMarker	= new THREEx.JsArucoMarker()
+
+	// init the image source grabbing
+	if( false ){
+		var videoGrabbing = new THREEx.VideoGrabbing()
+		jsArucoMarker.videoScaleDown = 10
+	}else if( true ){
+		var videoGrabbing = new THREEx.WebcamGrabbing()
+		jsArucoMarker.videoScaleDown = 2
+	}else if( true ){
+		var videoGrabbing = new THREEx.ImageGrabbing()
+		jsArucoMarker.videoScaleDown = 10
+	}else console.assert(false)
+
+	// attach the videoGrabbing.domElement to the body
+        document.body.appendChild(videoGrabbing.domElement)
+
+	// process the image source with the marker recognition
+	onRenderFcts.push(function(){
+		var domElement	= videoGrabbing.domElement
+		var markers	= jsArucoMarker.detectMarkers(domElement)
+		var object3d	= scene
+
+		object3d.visible = false
+
+		// see if this.markerId has been found
+		markers.forEach(function(marker){
+			if( marker.id !== 265 )	return
+
+			jsArucoMarker.markerToObject3D(marker, object3d)
+
+			object3d.visible = true
+		})
+	})
+</script></body>

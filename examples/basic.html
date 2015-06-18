@@ -84,6 +84,17 @@
 		scene.add( mesh );
 	})()
 
+	// add a awesome logo to the scene
+	;(function(){
+		var material = new THREE.SpriteMaterial({
+			map: THREE.ImageUtils.loadTexture( 'images/awesome.png' ),
+		});
+		var geometry = new THREE.BoxGeometry(1,1,1)
+		var object3d = new THREE.Sprite(material );
+		object3d.scale.set( 2, 2, 1 );
+		scene.add(object3d)
+	})()
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the whole thing on the page
 	//////////////////////////////////////////////////////////////////////////////////
