@@ -41,31 +41,29 @@
 	//////////////////////////////////////////////////////////////////////////////////
 	//		get Data
 	//////////////////////////////////////////////////////////////////////////////////
-	// @TODO make it an array
-	var dataBadges = {
-		person0:{
+	var dataBadges = [
+		{
 			firstName	: 'Gaspard',
 			lastName	: 'Guillaume',
 			role            : 'industry',
-			id 		: 0,
+			markerId	: 0,
 			avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-0.jpg',
 		},
-		person1:{
+		{
 			firstName	: 'Pedro',
 			lastName	: 'Sanchez',
 			role            : 'Cleaner',
-			id 		: 1,
+			markerId	: 1,
 			avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-1.jpg',
 		},
-		person265:{
+		{
 			firstName	: 'Johny',
 			lastName	: 'Blue',
 			role            : 'designer',
-			id 		: 265,
+			markerId	: 265,
 			avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-265.jpg',
-		}
-	}
-
+		},
+	]
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		add an object in the scene
@@ -131,6 +129,7 @@
 	// attach the videoGrabbing.domElement to the body
         document.body.appendChild(videoGrabbing.domElement)
 
+	// @TODO support click on the sprite
 
 	var previousMarkerId = null;
 
@@ -144,15 +143,19 @@
 
 		// see if this.markerId has been found
 		markers.forEach(function(marker){
-			if( dataBadges["person"+marker.id] === undefined ) 	return
+			var dataBadge = null
+			dataBadges.forEach(function(item){
+				if( item.markerId !== marker.id )	return
+				dataBadge = item
+			})
+
+			if( dataBadge === null )	return
 
 			if( marker.id !== previousMarkerId ){
-
-			    	var info = dataBadges['person'+marker.id]
-			    	badgeSprite.draw(info);
-
+			    	badgeSprite.draw(dataBadge);
 				previousMarkerId = marker.id;
 			}
+
 			/**
 			 * @TODO support multiple markers
 			 */
