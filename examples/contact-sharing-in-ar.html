@@ -18,6 +18,8 @@
 <!-- script specific to contact sharing in ar -->
 <script src='contact-sharing-in-ar/js/ui.badgesprite.js'></script>
 
+<script src='contact-sharing-in-ar/js/badgeInfos.js'></script>
+
 <body style='margin: 0px; overflow: hidden; text-align:center;'><script>
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Init
@@ -42,29 +44,29 @@
 	//////////////////////////////////////////////////////////////////////////////////
 	//		get Data
 	//////////////////////////////////////////////////////////////////////////////////
-	var badgeInfos = [
-		{
-			firstName	: 'Mike',
-			lastName	: 'Newton',
-			role            : 'industry',
-			markerId	: 0,
-			avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-0.jpg',
-		},
-		{
-			firstName	: 'Adam',
-			lastName	: 'Huxley',
-			role            : 'corporate',
-			markerId	: 1,
-			avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-1.jpg',
-		},
-		{
-			firstName	: 'Albert',
-			lastName	: 'Walton',
-			role            : 'designer',
-			markerId	: 265,
-			avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-265.jpg',
-		},
-	]
+	// var badgeInfos = [
+	// 	{
+	// 		firstName	: 'Mike',
+	// 		lastName	: 'Newton',
+	// 		role            : 'industry',
+	// 		markerId	: 0,
+	// 		avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-0.jpg',
+	// 	},
+	// 	{
+	// 		firstName	: 'Adam',
+	// 		lastName	: 'Huxley',
+	// 		role            : 'corporate',
+	// 		markerId	: 1,
+	// 		avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-1.jpg',
+	// 	},
+	// 	{
+	// 		firstName	: 'Albert',
+	// 		lastName	: 'Walton',
+	// 		role            : 'designer',
+	// 		markerId	: 265,
+	// 		avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-265.jpg',
+	// 	},
+	// ]
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		add an object in the scene
@@ -150,7 +152,10 @@
 				badgeInfo = item
 			})
 
-			if( badgeInfo === null )	return
+			if( badgeInfo === null ){
+				console.log('found marker', marker.id, 'but no matching badge found')
+				return
+			}
 
 			if( marker.id !== previousMarkerId ){
 			    	badgeSprite.draw(badgeInfo);
