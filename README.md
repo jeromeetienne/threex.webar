@@ -19,7 +19,7 @@ and
 - It runs on desktop and mobiles.
 - modern phones, such as nexus 6/9, are powerfull enougth to run it
 - unfortunatly ios browser still lack support
-  for [getUserMedia](http://caniuse.com/#feat=stream), so iphone and ipads can't play
+  for [getUserMedia](http://caniuse.com/#feat=stream), so iphone and ipads can't play :(
 
 # Show Don't Tell
 * [examples/basic.html](http://jeromeetienne.github.io/arplayerforthreejs/examples/basic.html)
