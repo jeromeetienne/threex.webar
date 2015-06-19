@@ -20,3 +20,25 @@ and
 - modern phones, such as nexus 6/9, are powerfull enougth to run it
 - unfortunatly ios browser still lack support
   for [getUserMedia](http://caniuse.com/#feat=stream), so iphone and ipads can't play
+
+# Show Don't Tell
+* [examples/basic.html](http://jeromeetienne.github.io/arplayerforthreejs/examples/basic.html)
+\[[view source](https://github.com/jeromeetienne/arplayerforthreejs/blob/master/examples/basic.html)\] :
+It shows a basic augmented reality webapp. Good to learn how to use the code. Perfect start point.
+* [examples/data-visualization-histogram3d.html](http://jeromeetienne.github.io/arplayerforthreejs/examples/data-visualization-histogram3d.html)
+\[[view source](https://github.com/jeromeetienne/arplayerforthreejs/blob/master/examples/data-visualization-histogram3d.html)\] :
+It shows a possible data visualisation with 3d histogram. You can change the value the way you like. You can get them from a REST API, or from an industrial sensor, what ever you want.
+* [examples/contact-sharing-in-ar.html](http://jeromeetienne.github.io/arplayerforthreejs/examples/contact-sharing-in-ar.html)
+\[[view source](https://github.com/jeromeetienne/arplayerforthreejs/blob/master/examples/contact-sharing-in-ar.html)\] :
+It shows how to display informations on a per-marker basis. 
+There is a database which contains the informations. When the proper marker is recognized, the info specific to this marker is displayed. In this example, we provide a contact sharing webapp. Everybody got his own marker. Suppose alice wears a specific marker. Bob load the apps on his mobile, and will see alice contact information when he point it to alice.
+
+# threex.jsArucoMarker.js
+It recognizes the marker in a video stream.
+It is then positioned in 3d.
+You just have to apply that to your own three.js meshes.
+
+# threex.webcamgrabbing.js
+It handles the video grabbing. 
+It will take the environment camera if it is available. 
+It provides a nice see-through effect.
