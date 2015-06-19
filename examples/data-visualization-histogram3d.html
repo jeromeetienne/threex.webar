@@ -135,7 +135,7 @@
 		mesh.position.x = posX;
 		mesh.position.y = 0;
 		mesh.position.z = 0;
-		myMatrix = new THREE.Matrix4().set(
+		var myMatrix = new THREE.Matrix4().set(
 			1,0,0,0,
 			0,1,0,0,
 			0,0,1,sizeBar/2,
@@ -159,8 +159,8 @@
 		var materialFront = new THREE.MeshBasicMaterial( { color:0xff0000,reflectivity:1} );
 		var materialSide = new THREE.MeshBasicMaterial( { color:0x1054B5,reflectivity:1} );
 
-		var materialArray = [ materialFront, materialSide ];
-		var textGeom = new THREE.TextGeometry( texte, {
+		var materials = [ materialFront, materialSide ];
+		var geometry = new THREE.TextGeometry( texte, {
 			size: 0.1,
 			height: 0.02,
 			curveSegments: 4,
@@ -172,18 +172,13 @@
 			extrudeMaterial: 1
 		});
 
-		var textMaterial = new THREE.MeshFaceMaterial(materialArray);
-		var textMesh = new THREE.Mesh(textGeom, textMaterial );
+		var material = new THREE.MeshFaceMaterial(materials);
+		var mesh = new THREE.Mesh(geometry, material );
 
-		textMesh.position.set( pos.x, pos.y, pos.z);
-		textMesh.rotation.set(rot.x,rot.y,rot.z);
-		scene.add(textMesh);
+		mesh.position.set( pos.x, pos.y, pos.z);
+		mesh.rotation.set(rot.x,rot.y,rot.z);
+		scene.add(mesh);
 	}
-
-
-
-
-
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the whole thing on the page
@@ -250,7 +245,7 @@
 
 		// see if this.markerId has been found
 		markers.forEach(function(marker){
-			if( marker.id !== 265 )	return
+			// if( marker.id !== 265 )	return
 
 			jsArucoMarker.markerToObject3D(marker, object3d)
 
