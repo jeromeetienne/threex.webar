@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <!-- include three.js -->
 <script src='../vendor/three.js/build/three.js'></script>
-<script src='../vendor/three.js/editor/js/libs/app.js'></script>
 
 <!-- include js-aruco -->
 <script src='../vendor/js-aruco/svd.js'></script>
@@ -17,36 +16,7 @@
 
 <body style='margin: 0px; overflow: hidden; text-align:center;'>
 
-<div id='info' style='position: absolute; top: 0px; width: 100%;font-family:arial; font-weight: bolder; padding-top: 5px;'>
-	Augmented Reality with <a href="http://threejs.org" target="_blank">three.js</a>
-	- works on desktop and mobile
-	- require <a href='https://get.webgl.org/'>WebGL</a> and <a href='http://caniuse.com/#feat=stream'>getUserMedia</a> Support
-	<br/>
-	Source:
-	<a class='webcam' href='javascript:void();'>webcam</a> -
-	<a class='image'  href='javascript:void();'>image</a> -
-	<a class='video'  href='javascript:void();'>video</a>
-</div>
-
 <script>
-	//////////////////////////////////////////////////////////////////////////////////
-	//		Handle ui button
-	//////////////////////////////////////////////////////////////////////////////////
-	document.querySelector('#info .webcam').addEventListener('click', function(event){
-		location.hash	= '#webcam'
-		location.reload()
-	})
-
-	document.querySelector('#info .image').addEventListener('click', function(event){
-		location.hash	= '#image'
-		location.reload()
-	})
-
-	document.querySelector('#info .video').addEventListener('click', function(event){
-		location.hash	= '#video'
-		location.reload()
-	})
-
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Init
 	//////////////////////////////////////////////////////////////////////////////////
@@ -171,4 +141,36 @@
 			object3d.visible = true
 		})
 	})
-</script></body>
+</script>
+
+<div id='info' style='position: absolute; top: 0px; width: 100%;font-family:arial; font-weight: bolder; padding-top: 5px;'>
+	Augmented Reality with <a href="http://threejs.org" target="_blank">three.js</a>
+	- works on desktop and mobile
+	- require <a href='https://get.webgl.org/'>WebGL</a> and <a href='http://caniuse.com/#feat=stream'>getUserMedia</a> Support
+	<br/>
+	Source:
+	<a class='webcam' href='javascript:void();'>webcam</a> -
+	<a class='image'  href='javascript:void();'>image</a> -
+	<a class='video'  href='javascript:void();'>video</a>
+</div>
+
+<script>
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Handle ui button
+	//////////////////////////////////////////////////////////////////////////////////
+	document.querySelector('#info .webcam').addEventListener('click', function(event){
+		location.hash	= '#webcam'
+		location.reload()
+	})
+
+	document.querySelector('#info .image').addEventListener('click', function(event){
+		location.hash	= '#image'
+		location.reload()
+	})
+
+	document.querySelector('#info .video').addEventListener('click', function(event){
+		location.hash	= '#video'
+		location.reload()
+	})
+</script>
+</body>

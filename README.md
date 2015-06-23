@@ -6,7 +6,7 @@ I did a presentation about it. You can find the [slides](http://jeromeetienne.gi
 here.
 
 # How To Run The Demo ?
-- put a browser http://jeromeetienne.github.io/arplayerforthreejs/examples/basic.html
+- put a browser on http://jeromeetienne.github.io/arplayerforthreejs/examples/basic.html
 - it will read your webcam using [getUserMedia](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/getUserMedia)
   - if it asks for permission, allow it :)
 - it will recognize the marker you put in front of the mcamera
