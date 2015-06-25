@@ -103,6 +103,22 @@ window.URL      = window.URL || window.webkitURL;
 <!-- // Init iframe 				// -->
 <!-- ///////////////////////////////////////////// -->
 
-<iframe id='iframe-ui' src='iframe-ui.html'  style='position: absolute; top: 0px; width: 100%; height: 100%; border: 0px; z-index:1000;'></iframe>
+<iframe id='iframe-ui' src='iframe-overlay-ui.html'  style='position: absolute; top: 0px; width: 100%; height: 100%; border: 0px; z-index:1000;'></iframe>
+
+<script>
+;(function(){
+        if( location.hash === '' ){
+                location.hash = '#'+encodeURIComponent('iframe-overlay-ui.html')
+                location.reload()
+        }
+        
+        var hash = location.hash.substr(1)
+        var url = decodeURIComponent(hash)
+        var iframe = document.querySelector('iframe')
+        iframe.src= url
+})()
+
+
+</script>
 
 </body>
