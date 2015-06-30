@@ -10,10 +10,10 @@
 <script src='../vendor/js-aruco/aruco.js'></script>
 
 <!-- include some extensions -->
-<script src='../src/threex.webcamgrabbing.js'></script>
-<script src='../src/threex.imagegrabbing.js'></script>
-<script src='../src/threex.videograbbing.js'></script> 
-<script src='../src/threex.jsarucomarker.js'></script>
+<script src='../threex.webcamgrabbing.js'></script>
+<script src='../threex.imagegrabbing.js'></script>
+<script src='../threex.videograbbing.js'></script> 
+<script src='../threex.jsarucomarker.js'></script>
 
 <body style='margin: 0px; overflow: hidden; text-align:center;'>
 
@@ -72,8 +72,6 @@
 	//////////////////////////////////////////////////////////////////////////////////
 	var markerObject3D = new THREE.Object3D()
 	scene.add(markerObject3D)
-	// set the markerObject3D as visible
-	markerObject3D.visible	= false
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		add an object in the markerObject3D
@@ -159,6 +157,8 @@
 	// attach the videoGrabbing.domElement to the body
         document.body.appendChild(videoGrabbing.domElement)
 
+	// set the markerObject3D as visible
+	markerObject3D.visible	= false
 	// process the image source with the marker recognition
 	onRenderFcts.push(function(){
 		var domElement	= videoGrabbing.domElement
