@@ -3,12 +3,11 @@
 threex.webar shows how to get augmented reality using only web technologies.
 It is a [threex extension for three.js](http://www.threejsgames.com/extensions/).
 It provides easy to use extension to experiment with augmented reality and three.js.
-
 I did a presentation about it. You can find the [slides](http://jeromeetienne.github.io/slides/augmentedrealitywiththreejs/)
 here.
 
 # A Screenshot
-[![screenshot](https://raw.githubusercontent.com/jeromeetienne/threex.sample/master/examples/images/screenshot-threex-sample-512x512.jpg)](http://jeromeetienne.github.io/threex.sample/examples/basic.html)
+[![screenshot](https://raw.githubusercontent.com/jeromeetienne/threex.webar/master/examples/images/screenshot-threex-webar-512x512.jpg)](http://jeromeetienne.github.io/threex.webar/examples/basic.html)
 
 # How To Install It
 
