@@ -1,9 +1,29 @@
-# Augmented Reality For Three.js
+# Augmented Reality For the Web
 
-This demo shows how to get augmented reality using only web technologies.
+threex.webar shows how to get augmented reality using only web technologies.
+It is a [threex extension for three.js](http://www.threejsgames.com/extensions/).
+It provides easy to use extension to experiment with augmented reality and three.js.
 
 I did a presentation about it. You can find the [slides](http://jeromeetienne.github.io/slides/augmentedrealitywiththreejs/)
 here.
+
+# A Screenshot
+[![screenshot](https://raw.githubusercontent.com/jeromeetienne/threex.sample/master/examples/images/screenshot-threex-sample-512x512.jpg)](http://jeromeetienne.github.io/threex.sample/examples/basic.html)
+
+# How To Install It
+
+You can install it via script tag
+
+```html
+<script src='threex.jsarucomarker.js'></script>
+<script src='threex.webcamgrabbing.js'></script>
+```
+
+Or you can install with [bower](http://bower.io/), as you wish.
+
+```bash
+bower install threex.webar
+```
 
 # How To Run The Demo ?
 - put a browser on http://jeromeetienne.github.io/threex.webar/examples/basic.html
@@ -42,12 +62,14 @@ There is a database which contains the informations. When the proper marker is r
 -
 [youtube video](https://www.youtube.com/watch?v=wrMX_FH2hsc)
 
-# threex.jsArucoMarker.js
+# How To Use It
+
+## threex.jsArucoMarker.js
 It recognizes the marker in a video stream.
 It is then positioned in 3d.
 You just have to apply that to your own three.js meshes.
 
-# threex.webcamgrabbing.js
+## threex.webcamgrabbing.js
 It handles the video grabbing.
 It will take the environment camera if it is available.
 It provides a nice see-through effect.
