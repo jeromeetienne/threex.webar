@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- include three.js -->
 <script src='vendor/three.js/build/three.js'></script>
-<script src='vendor/three.js/editor/js/libs/app.js'></script>
+<script src='vendor/three.js/examples/js/libs/stats.min.js'></script>
 
 <!-- include js-aruco -->
 <script src='../vendor/js-aruco/svd.js'></script>
@@ -29,6 +29,50 @@
 </div>
 
 <script>
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Test if the browser support WebGL and getUserMedia
+	//////////////////////////////////////////////////////////////////////////////////
+	;(function(){
+		// TODO backport those 2 in Detector.js
+		var hasGetUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia) ? true : false
+		var hasMediaStreamTrackSources = MediaStreamTrack.getSources ? true : false
+		var hasWebGL = ( function () { try { var canvas = document.createElement( 'canvas' ); return !! ( window.WebGLRenderingContext && ( canvas.getContext( 'webgl' ) || canvas.getContext( 'experimental-webgl' ) ) ); } catch ( e ) { return false; } } )()
+		
+		if( hasWebGL === false ){
+			alert('your browser doesn\'t support navigator.getUserMedia()')			
+		}
+		if( hasMediaStreamTrackSources === false ){
+			alert('your browser doesn\'t support MediaStreamTrack.getSources()')			
+		}
+		if( hasGetUserMedia === false ){
+			alert('your browser doesn\'t support navigator.getUserMedia()')		
+		}
+	})()
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	//		enabled/disable 
+	//////////////////////////////////////////////////////////////////////////////////
+	var detectMarkersEnabled	= true
+	var markerToObject3DEnabled	= true
+	var webglRenderEnabled		= true
+	
+	//////////////////////////////////////////////////////////////////////////////////
+	//		init Stats for detectMarkers
+	//////////////////////////////////////////////////////////////////////////////////
+	var detectMarkersStats = new Stats();
+	detectMarkersStats.setMode( 1 );
+	document.body.appendChild( detectMarkersStats.domElement );
+        detectMarkersStats.domElement.style.position = 'absolute'
+	detectMarkersStats.domElement.style.bottom = '0px'
+	detectMarkersStats.domElement.style.right = '0px'
+
+	var renderStats = new Stats();
+	renderStats.setMode( 0 );
+	document.body.appendChild( renderStats.domElement );
+        renderStats.domElement.style.position = 'absolute'
+	renderStats.domElement.style.bottom = '0px'
+	renderStats.domElement.style.left = '0px'
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Handle ui button
 	//////////////////////////////////////////////////////////////////////////////////
@@ -112,10 +156,14 @@
 		camera.updateProjectionMatrix()
 	}, false)
 
-
+	
 	// render the scene
-	onRenderFcts.push(function(){
-		renderer.render( scene, camera );
+	onRenderFcts.push(function(){	
+		renderStats.begin();
+		if( webglRenderEnabled === true ){
+			renderer.render( scene, camera );
+		}
+		renderStats.end();
 	})
 
 	// run the rendering loop
@@ -145,7 +193,7 @@
 	// init the image source grabbing
 	if( location.hash === '#video' ){
 		var videoGrabbing = new THREEx.VideoGrabbing()
-		jsArucoMarker.videoScaleDown = 10
+		jsArucoMarker.videoScaleDown = 5
 	}else if( location.hash === '#webcam' ){
 		var videoGrabbing = new THREEx.WebcamGrabbing()
 		jsArucoMarker.videoScaleDown = 2
@@ -157,17 +205,25 @@
 	// attach the videoGrabbing.domElement to the body
         document.body.appendChild(videoGrabbing.domElement)
 
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Process video source to find markers
+	//////////////////////////////////////////////////////////////////////////////////
 	// set the markerObject3D as visible
 	markerObject3D.visible	= false
 	// process the image source with the marker recognition
 	onRenderFcts.push(function(){
-		var domElement	= videoGrabbing.domElement
-		var markers	= jsArucoMarker.detectMarkers(domElement)
-
+		if( detectMarkersEnabled === false )	return
+		
 		markerObject3D.visible = false
+
+		var domElement	= videoGrabbing.domElement
+		detectMarkersStats.begin();
+		var markers	= jsArucoMarker.detectMarkers(domElement)
+		detectMarkersStats.end();
 
 		// see if this.markerId has been found
 		markers.forEach(function(marker){
+			if( markerToObject3DEnabled === false )	return
 
 			// if( marker.id !== 265 )	return
 
