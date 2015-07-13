@@ -15,9 +15,9 @@
 <script src='../threex.videograbbing.js'></script> 
 <script src='../threex.jsarucomarker.js'></script>
 
-<body style='margin: 0px; overflow: hidden; text-align:center;'>
+<body style='margin: 0px; overflow: hidden;'>
 
-<div id='info' style='position: absolute; top: 0px; width: 100%;font-family:arial; font-weight: bolder; padding-top: 5px;'>
+<div id='info' style='position: absolute; top: 0px; width: 100%;font-family:arial; font-weight: bolder; padding-top: 5px; text-align:center;'>
 	Augmented Reality with <a href="http://threejs.org" target="_blank">three.js</a>
 	- works on desktop and mobile
 	- require <a href='https://get.webgl.org/'>WebGL</a> and <a href='http://caniuse.com/#feat=stream'>getUserMedia</a> Support
@@ -26,6 +26,23 @@
 	<a class='webcam' href='javascript:void();'>webcam</a> -
 	<a class='image'  href='javascript:void();'>image</a> -
 	<a class='video'  href='javascript:void();'>video</a>
+</div>
+
+<div id='performanceEnabler' style='position: absolute; top: 0px; right: 0px; text-align: right;background-color:rgba(0,0,0,0.5); padding-left: 10px; padding-bottom: 10px;'>
+	<div style='text-align: center;'>OPTIONS</div>
+	<hr/>
+	<label id='detectMarkersEnabled' title='to enable/disable marker detection in video'>
+		detectMarkers	<input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='markerToObject3DEnabled' title='to enable/disable marker to object3d conversion'>
+		markerToObject3D <input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='webglRenderEnabled' title='to enable/disable webgl rendering'>
+		webglRender	<input type="checkbox"> 
+	</label>
+	<br/>
 </div>
 
 <script>
@@ -55,6 +72,24 @@
 	var detectMarkersEnabled	= true
 	var markerToObject3DEnabled	= true
 	var webglRenderEnabled		= true
+	
+	document.querySelector('#detectMarkersEnabled input').checked	= detectMarkersEnabled
+	document.querySelector('#detectMarkersEnabled input').addEventListener('change', function(){
+		detectMarkersEnabled = document.querySelector('#detectMarkersEnabled input').checked 
+	})
+
+	document.querySelector('#markerToObject3DEnabled input').checked= markerToObject3DEnabled
+	document.querySelector('#markerToObject3DEnabled input').addEventListener('change', function(){
+		markerToObject3DEnabled = document.querySelector('#markerToObject3DEnabled input').checked 
+	})
+
+	document.querySelector('#webglRenderEnabled input').checked	= webglRenderEnabled
+	document.querySelector('#webglRenderEnabled input').addEventListener('change', function(){
+		webglRenderEnabled = document.querySelector('#webglRenderEnabled input').checked
+	
+		renderer.clear()
+	})
+	
 	
 	//////////////////////////////////////////////////////////////////////////////////
 	//		init Stats for detectMarkers
