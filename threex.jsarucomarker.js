@@ -2,6 +2,7 @@ var THREEx = THREEx || {}
 
 /**
  * Handle jsaruco markers
+ * @constructor
  */
 THREEx.JsArucoMarker = function(){
 	var _this = this

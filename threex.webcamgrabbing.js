@@ -6,6 +6,7 @@ window.URL = window.URL || window.webkitURL;
 
 /**
  * Grab camera
+ * @constructor
  */
 THREEx.WebcamGrabbing = function(){
 

@@ -2,6 +2,7 @@ var THREEx = THREEx || {}
 
 /**
  * Grab camera
+ * @constructor
  */
 THREEx.VideoGrabbing = function(){
 
