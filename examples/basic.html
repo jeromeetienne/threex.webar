@@ -253,16 +253,17 @@
 	onRenderFcts.push(function(){
 		if( detectMarkersEnabled === false )	return
 		
-		markerObject3D.visible = false
-
 		var domElement	= videoGrabbing.domElement
 		detectMarkersStats.begin();
 		var markers	= jsArucoMarker.detectMarkers(domElement)
 		detectMarkersStats.end();
 
+
+		if( markerToObject3DEnabled === false )	return
+		markerObject3D.visible = false
+
 		// see if this.markerId has been found
 		markers.forEach(function(marker){
-			if( markerToObject3DEnabled === false )	return
 
 			// if( marker.id !== 265 )	return
 
