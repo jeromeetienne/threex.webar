@@ -32,7 +32,8 @@
 	<a class='video'  href='javascript:void();'>video</a>
 </div>
 
-<div id='performanceEnabler' style='position: absolute; top: 0px; right: 0px; text-align: right;background-color:rgba(0,0,0,0.5); padding-left: 10px; padding-bottom: 10px;'>
+<div id='performanceEnabler' style='position: absolute; top: 0px; right: 0px; text-align: right;background-color:rgba(255,255,255,0.5);padding-left: 10px; padding-bottom: 10px;border-width: 1px;
+  border-style: solid;'>
 	<div style='text-align: center;'>OPTIONS</div>
 	<hr/>
 	<label id='detectMarkersEnabled' title='to enable/disable marker detection in video'>
@@ -45,6 +46,10 @@
 	<br/>
 	<label id='webglRenderEnabled' title='to enable/disable webgl rendering'>
 		webglRender	<input type="checkbox"> 
+	</label>
+	<br/>
+	<label id='markerDebugEnabled' title='to enable/disable marker debug'>
+		marker debug	<input type="checkbox"> 
 	</label>
 	<br/>
 </div>
@@ -90,11 +95,15 @@
 	document.querySelector('#webglRenderEnabled input').checked	= webglRenderEnabled
 	document.querySelector('#webglRenderEnabled input').addEventListener('change', function(){
 		webglRenderEnabled = document.querySelector('#webglRenderEnabled input').checked
-	
+		// clear the webgl canvas - thus the last webgl rendering disapears
 		renderer.clear()
 	})
-	
-	
+
+	document.querySelector('#markerDebugEnabled input').checked	= false
+	document.querySelector('#markerDebugEnabled input').addEventListener('change', function(){
+		jsArucoMarker.debugEnabled = document.querySelector('#markerDebugEnabled input').checked
+	})
+
 	//////////////////////////////////////////////////////////////////////////////////
 	//		init Stats for detectMarkers
 	//////////////////////////////////////////////////////////////////////////////////
@@ -232,7 +241,7 @@
 	// init the image source grabbing
 	if( location.hash === '#video' ){
 		var videoGrabbing = new THREEx.VideoGrabbing()
-		jsArucoMarker.videoScaleDown = 5
+		jsArucoMarker.videoScaleDown = 2
 	}else if( location.hash === '#webcam' ){
 		var videoGrabbing = new THREEx.WebcamGrabbing()
 		jsArucoMarker.videoScaleDown = 2
@@ -258,13 +267,11 @@
 		var markers	= jsArucoMarker.detectMarkers(domElement)
 		detectMarkersStats.end();
 
-
 		if( markerToObject3DEnabled === false )	return
 		markerObject3D.visible = false
 
 		// see if this.markerId has been found
 		markers.forEach(function(marker){
-
 			// if( marker.id !== 265 )	return
 
 			jsArucoMarker.markerToObject3D(marker, markerObject3D)

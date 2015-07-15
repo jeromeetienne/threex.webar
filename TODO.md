@@ -1,8 +1,8 @@
 # Port to old jsartoolkit
 
-- display native video source resolution
-- display videoScaleDown
-- display analized video surface for debug
+- DONE display native video source resolution
+- DONE display videoScaleDown
+- DONE display analized video surface for debug
 
 - DONE Improve detection support
   - detect if you got webgl
