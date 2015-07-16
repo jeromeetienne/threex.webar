@@ -14,14 +14,22 @@ THREEx.JsArucoMarker = function(){
 	var canvasElement = document.createElement('canvas')
 	var context = canvasElement.getContext("2d");
 
-	if( this.debugEnabled ){
-		document.body.appendChild(canvasElement)
-		canvasElement.style.position = 'absolute'
-		canvasElement.style.top = '0px'
-		canvasElement.style.left = '0px'
-		canvasElement.style.opacity = 0.2
-	}
-
+	// create debug element
+	var debugElement	= document.createElement('div')
+	debugElement.appendChild(canvasElement)
+	debugElement.style.position = 'absolute'
+	debugElement.style.top = '0px'
+	debugElement.style.left = '0px'
+	debugElement.style.opacity = 0.2
+	
+	var debugInfoElement	= document.createElement('div')
+	debugElement.appendChild( debugInfoElement )
+	debugInfoElement.classList.add('info')
+	debugInfoElement.innerHTML = ''
+		+ '<div>canvasSize: <span class="canvasSize">n/a</span></div>'
+		+ '<div>videoScaleDown: <span class="videoScaleDown">n/a</span></div>'
+		+ '<div>videoSize: <span class="videoSize">n/a</span></div>'
+	
 	/**
 	 * Detect Marker in a videoElement or imageElement
 	 *
@@ -56,10 +64,37 @@ THREEx.JsArucoMarker = function(){
 		var detector = new AR.Detector();
 		var markers = detector.detect(imageData);
 
+		//////////////////////////////////////////////////////////////////////////////////
+		//		update debug
+		//////////////////////////////////////////////////////////////////////////////////
+
+		// TODO put that in a special class ?
+
+		var debugAttached = debugElement.parentNode !== null ? true : false
+
+		if( this.debugEnabled === true && debugAttached === false ){
+			document.body.appendChild(debugElement)
+		}
+
+		if( this.debugEnabled === false && debugAttached === true ){
+			debugElement.parentNode.removeChild( debugElement )
+		}
+
 		// display markers on canvas for debug
-		if( this.debugEnabled ){
+		if( this.debugEnabled === true ){
+			debugElement.querySelector('.info .videoScaleDown').innerHTML = this.videoScaleDown
+			if( videoElement.videoWidth !== undefined ){
+				debugElement.querySelector('.info .videoSize').innerHTML = videoElement.videoWidth + 'x' + videoElement.videoHeight
+			}else{
+				debugElement.querySelector('.info .videoSize').innerHTML = videoElement.naturalWidth + 'x' + videoElement.naturalHeight				
+			}
+			debugElement.querySelector('.info .canvasSize').innerHTML = canvasElement.width + 'x' + canvasElement.height
 			drawDebug(markers, canvasElement)
 		}
+
+		//////////////////////////////////////////////////////////////////////////////////
+		//		TO COMMENT
+		//////////////////////////////////////////////////////////////////////////////////
 
 		// return the result
 		return markers
