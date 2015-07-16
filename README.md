@@ -6,6 +6,9 @@ It provides easy to use extension to experiment with augmented reality and three
 I did a presentation about it. You can find the [slides](http://jeromeetienne.github.io/slides/augmentedrealitywiththreejs/)
 here.
 
+As an example, you can checkout ["Hatsunemiku Dancing in Augmented Reality"](https://github.com/jeromeetienne/demo.hatsunemiku-augmentedreality) demo.
+It is a funny application of [threex.webar](https://github.com/jeromeetienne/threex.webar)
+
 # A Screenshot
 [![screenshot](https://raw.githubusercontent.com/jeromeetienne/threex.webar/master/examples/images/screenshot-threex-webar-512x512.jpg)](http://jeromeetienne.github.io/threex.webar/examples/basic.html)
 
