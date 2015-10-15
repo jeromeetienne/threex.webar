@@ -5,20 +5,20 @@ var badgeInfos = [
 		lastName	: 'Newton',
 		role            : 'industry',
 		markerId	: 0,
-		avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-0.jpg',
+		avatar	        : 'contact-sharing-in-ar/avatars/avatar-0.jpg',
 	},
 	{
 		firstName	: 'Adam',
 		lastName	: 'Huxley',
 		role            : 'designer',
 		markerId	: 236,
-		avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-236.jpg',
+		avatar	        : 'contact-sharing-in-ar/avatars/avatar-236.jpg',
 	},
 	{
 		firstName	: 'Albert',
 		lastName	: 'Walton',
 		role            : 'corporate',
 		markerId	: 265,
-		avatar	        : '/examples/contact-sharing-in-ar/avatars/avatar-265.jpg',
+		avatar	        : 'contact-sharing-in-ar/avatars/avatar-265.jpg',
 	},
 ]
