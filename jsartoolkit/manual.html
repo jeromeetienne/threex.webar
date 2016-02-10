@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<script src="../examples/vendor/three.js/build/three.js"></script>
+<script src="vendor/artoolkit.debug.js"></script>
+<script src="vendor/artoolkit.api.js"></script>
+<style>
+	body {
+		margin : 0px;
+		width: 100%;
+	}
+</style>
+<body><script>
+	var debugEnabled	= false
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Init
+	//////////////////////////////////////////////////////////////////////////////////
+
+	var video = document.createElement('video');
+	// video.style.position = 'absolute'
+	document.body.appendChild(video)
+	video.src = 'videos/output_4.ogg';
+	video.autoplay = true;
+	video.webkitPlaysinline = true;
+	video.controls = false;
+	video.loop = true;
+	video.width = 640;
+	video.height = 480;
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Init
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// init renderer
+	var renderer	= new THREE.WebGLRenderer({
+		antialias	: true,
+		alpha: true
+	});
+	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
+	renderer.setSize( video.width, video.height );
+	renderer.domElement.style.position = 'absolute'
+	renderer.domElement.style.left = '8px'
+	document.body.appendChild( renderer.domElement );
+
+	// array of functions for the rendering loop
+	var onRenderFcts= [];
+
+	// init scene and camera
+	var scene	= new THREE.Scene();
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		Comments
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// Create a camera and a marker root object for your Three.js scene.
+	var camera = new THREE.Camera();
+	camera.matrixAutoUpdate = false;
+	scene.add(camera);
+
+	var arController = null;
+
+	// load camera parameters
+	var cameraParameters = new ARCameraParam();
+	cameraParameters.onload = function(){
+
+		arController = new ARController(video.width, video.height, cameraParameters);
+		if( debugEnabled )	arController.debugSetup();
+
+		var cameraMatrix = arController.getCameraMatrix();
+		camera.projectionMatrix.elements.set(cameraMatrix);
+
+	}
+	cameraParameters.load('data/camera_para.dat')
+
+	// create the marker Root
+	var markerRoot = new THREE.Object3D()
+	markerRoot.markerMatrix = new Float64Array(12)
+	markerRoot.matrixAutoUpdate = false
+	markerRoot.visible = false
+	scene.add(markerRoot)
+
+	onRenderFcts.push(function(){
+		if (!arController) return
+
+		arController.detectMarker(video);
+		if( debugEnabled )	arController.debugDraw()
+
+		// update markerRoot with the found markers
+		var markerNum = arController.getMarkerNum();
+		if (markerNum > 0) {
+			if( markerRoot.visible === false ) {
+				arController.getTransMatSquare(0 /* Marker index */, 1 /* Marker width */, markerRoot.markerMatrix);
+			} else {
+				arController.getTransMatSquareCont(0, 1, markerRoot.markerMatrix, markerRoot.markerMatrix);
+			}
+			arController.transMatToGLMat(markerRoot.markerMatrix, markerRoot.matrix.elements);
+		}
+
+		// objects visible IIF there is a marker
+		if (markerNum > 0) {
+			markerRoot.visible = true;
+		} else {
+			markerRoot.visible = false;
+		}
+	})
+
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//		add an object in the scene
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// add a torus knot	
+	var geometry	= new THREE.CubeGeometry(1,1,1);
+	var material	= new THREE.MeshNormalMaterial({
+		transparent : true,
+		opacity: 0.5,
+		side: THREE.DoubleSide
+	}); 
+	var mesh	= new THREE.Mesh( geometry, material );
+	mesh.position.z	= geometry.parameters.height/2
+	markerRoot.add( mesh );
+	
+	var geometry	= new THREE.TorusKnotGeometry(0.3,0.1,32,32);
+	var material	= new THREE.MeshNormalMaterial(); 
+	var mesh	= new THREE.Mesh( geometry, material );
+	mesh.position.z	= 0.5
+	markerRoot.add( mesh );
+	
+	onRenderFcts.push(function(){
+		mesh.rotation.x += 0.1
+	})
+	
+	
+		
+	//////////////////////////////////////////////////////////////////////////////////
+	//		render the whole thing on the page
+	//////////////////////////////////////////////////////////////////////////////////
+
+	// render the scene
+	onRenderFcts.push(function(){
+		renderer.render( scene, camera );		
+	})
+	
+	// run the rendering loop
+	var lastTimeMsec= null
+	requestAnimationFrame(function animate(nowMsec){
+		// keep looping
+		requestAnimationFrame( animate );
+		// measure time
+		lastTimeMsec	= lastTimeMsec || nowMsec-1000/60
+		var deltaMsec	= Math.min(200, nowMsec - lastTimeMsec)
+		lastTimeMsec	= nowMsec
+		// call each update function
+		onRenderFcts.forEach(function(onRenderFct){
+			onRenderFct(deltaMsec/1000, nowMsec/1000)
+		})
+	})
+</script></body>
