@@ -77,12 +77,12 @@
 
 				if (!arController) {
 					arController = new ARController(video, cameraParameters);
-					if( debugEnabled )arController.debugSetup();
+					if( debugEnabled ) arController.debugSetup();
 
 					var cameraMatrix = arController.getCameraMatrix();
 					camera.projectionMatrix.elements.set(cameraMatrix);
 				}
-				
+				debugger
 				clearInterval(interval)
 			}, 16);
 		});
@@ -150,7 +150,7 @@
 
 		arController.detectMarker(video);
 		if( debugEnabled )	arController.debugDraw();		
-
+debugger;
 		// update markerRoot with the found markers
 		var markerNum = arController.getMarkerNum();
 		if (markerNum > 0) {
