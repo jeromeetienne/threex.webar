@@ -123,6 +123,12 @@
 	// 	renderer.domElement.style.zoom = (ratio*100)+'%'
 	// }
 
+	var ambient = new THREE.AmbientLight( 0x666666 );
+	scene.add( ambient );
+
+	var directionalLight = new THREE.DirectionalLight( 0x887766 );
+	directionalLight.position.set( -1, 1, 1 ).normalize();
+	scene.add( directionalLight );
 	
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Comments
@@ -202,11 +208,15 @@
 
 	loader.load( modelFile, vmdFiles, function ( object ) {
 
-		mesh = object;
-		mesh.position.y = -10;
+		var mesh = object;
+		mesh.rotation.x = Math.PI/2
+		mesh.rotation.y = -Math.PI/2
+		// mesh.rotation.z = -Math.PI/2
+		mesh.scale.multiplyScalar(1/10)
+		// mesh.position.y = -10;
 
-		// helper.add( mesh );
-		// helper.setAnimation( mesh );
+		helper.add( mesh );
+		helper.setAnimation( mesh );
 		// helper.setPhysics( mesh );
 
 		// helper.unifyAnimationDuration( { afterglow: 2.0 } );
@@ -214,6 +224,7 @@
 		// scene.add( mesh );
 		markerRoot.add(mesh)
 window.hatsune = mesh
+
 	}, onProgress, onError );
 	
 
@@ -221,34 +232,48 @@ window.hatsune = mesh
 	//		add an object in the scene
 	//////////////////////////////////////////////////////////////////////////////////
 
-	// add a torus knot	
-	var geometry	= new THREE.CubeGeometry(1,1,1);
-	var material	= new THREE.MeshNormalMaterial({
-		transparent : true,
-		opacity: 0.5,
-		side: THREE.DoubleSide
-	}); 
-	var mesh	= new THREE.Mesh( geometry, material );
-	mesh.position.z	= geometry.parameters.height/2
-	markerRoot.add( mesh );
-	
-	var geometry	= new THREE.TorusKnotGeometry(0.3,0.1,32,32);
-	var material	= new THREE.MeshNormalMaterial(); 
-	var mesh	= new THREE.Mesh( geometry, material );
-	mesh.position.z	= 0.5
-	markerRoot.add( mesh );
-	
-	onRenderFcts.push(function(){
-		mesh.rotation.x += 0.1
-	})
+	// // add a torus knot	
+	// var geometry	= new THREE.CubeGeometry(1,1,1);
+	// var material	= new THREE.MeshNormalMaterial({
+	// 	transparent : true,
+	// 	opacity: 0.5,
+	// 	side: THREE.DoubleSide
+	// }); 
+	// var mesh	= new THREE.Mesh( geometry, material );
+	// mesh.position.z	= geometry.parameters.height/2
+	// markerRoot.add( mesh );
+	// 
+	// var geometry	= new THREE.TorusKnotGeometry(0.3,0.1,32,32);
+	// var material	= new THREE.MeshNormalMaterial(); 
+	// var mesh	= new THREE.Mesh( geometry, material );
+	// mesh.position.z	= 0.5
+	// markerRoot.add( mesh );
+	// 
+	// onRenderFcts.push(function(){
+	// 	mesh.rotation.x += 0.1
+	// })
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		render the whole thing on the page
 	//////////////////////////////////////////////////////////////////////////////////
 
 	// render the scene
-	onRenderFcts.push(function(){
-		renderer.render( scene, camera );		
+
+	var clock = new THREE.Clock();
+	onRenderFcts.push(function(delta){
+		if ( window.hatsune ) {
+
+			helper.animate( delta );
+			helper.render( scene, camera );
+
+		} else {
+
+			renderer.clear();
+			renderer.render( scene, camera );
+
+		}
+		// 
+		// renderer.render( scene, camera );		
 	})
 
 	// run the rendering loop
