@@ -50,7 +50,7 @@
 		video: {
 			mandatory: {
 				maxWidth: 1280 / 2,
-				maxHeight: 720 / 2
+				maxHeight: 960 / 2
 	    		}
 	  	}
 	};
@@ -74,6 +74,7 @@
 		var cameraParameters = new ARCameraParam('data/camera_para.dat', function() {
 			var interval = setInterval(function() {
 				if (!video.videoWidth)	return;
+				// debugger;
 
 				if (!arController) {
 					arController = new ARController(video, cameraParameters);
@@ -82,7 +83,6 @@
 					var cameraMatrix = arController.getCameraMatrix();
 					camera.projectionMatrix.elements.set(cameraMatrix);
 				}
-				debugger
 				clearInterval(interval)
 			}, 16);
 		});
@@ -98,7 +98,7 @@
 		alpha: true
 	});
 	renderer.setClearColor(new THREE.Color('lightgrey'), 0)
-	renderer.setSize( video.width, video.height );
+	renderer.setSize( 1280/2, 960/2 );
 	renderer.domElement.style.position = 'absolute'
 	renderer.domElement.style.left = '0px'
 	document.body.appendChild( renderer.domElement );
@@ -150,7 +150,6 @@
 
 		arController.detectMarker(video);
 		if( debugEnabled )	arController.debugDraw();		
-debugger;
 		// update markerRoot with the found markers
 		var markerNum = arController.getMarkerNum();
 		if (markerNum > 0) {

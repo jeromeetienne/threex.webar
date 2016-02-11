@@ -1,12 +1,7 @@
-# Port to old jsartoolkit
-
-- DONE display native video source resolution
-- DONE display videoScaleDown
-- DONE display analized video surface for debug
-
-- DONE Improve detection support
-  - detect if you got webgl
-  - detect if you got getusermedia
-- DONE add ways to enable/disable every part - good to bench
-- DONE display 3d fps
-- DONE display ar marker fps
+## See thru refactoring
+- goal: read the webcam and display it behind the canvas
+- step: get the webcam
+  - env facing if possible
+  - at the proper aspect
+  - which resolution ? performance issue
+- handle the aspect change when the phone change its orientation
