@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-<script src="../examples/vendor/three.js/build/three.js"></script>
-<script src="vendor/artoolkit.debug.js"></script>
-<script src="vendor/artoolkit.api.js"></script>
-<script src="../threex.videograbbing.js"></script>
+<!-- <script src="../examples/vendor/three.js/build/three.js"></script> -->
+<script src="vendor/three.js/build/three.js"></script>
+<script src="vendor/jsartoolkit/artoolkit.debug.js"></script>
+<script src="vendor/jsartoolkit/artoolkit.api.js"></script>
+
+<script src="vendor/three.js/examples/js/libs/charsetencoder.min.js"></script>
+<script src="vendor/three.js/examples/js/libs/ammo.js"></script>
+<script src="vendor/three.js/examples/js/loaders/TGALoader.js"></script>
+<script src="vendor/three.js/examples/js/loaders/MMDLoader.js"></script>
+<script src="vendor/three.js/examples/js/animation/CCDIKSolver.js"></script>
+<script src="vendor/three.js/examples/js/animation/MMDPhysics.js"></script>
+
 <style>
 	body {
 		margin : 0px;
@@ -169,6 +177,45 @@
 		}
 	})
 
+	//////////////////////////////////////////////////////////////////////////////
+	//              Code Separator
+	//////////////////////////////////////////////////////////////////////////////
+	// model
+
+	var onProgress = function ( xhr ) {
+		if ( xhr.lengthComputable ) {
+			var percentComplete = xhr.loaded / xhr.total * 100;
+			console.log( Math.round(percentComplete, 2) + '% downloaded' );
+		}
+	};
+
+	var onError = function ( xhr ) {
+	};
+
+	var modelFile = 'models/mmd/miku/miku_v2.pmd';
+	var vmdFiles = [ 'models/mmd/vmd/wavefile_v2.vmd' ];
+
+	helper = new THREE.MMDHelper( renderer );
+
+	var loader = new THREE.MMDLoader();
+	loader.setDefaultTexturePath( './models/mmd/default/' );
+
+	loader.load( modelFile, vmdFiles, function ( object ) {
+
+		mesh = object;
+		mesh.position.y = -10;
+
+		// helper.add( mesh );
+		// helper.setAnimation( mesh );
+		// helper.setPhysics( mesh );
+
+		// helper.unifyAnimationDuration( { afterglow: 2.0 } );
+
+		// scene.add( mesh );
+		markerRoot.add(mesh)
+window.hatsune = mesh
+	}, onProgress, onError );
+	
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		add an object in the scene
