@@ -10,13 +10,13 @@
 		/*width: 100%;*/
 	}
 </style>
-<div style='position:absolute; bottom: 10px; width: 100%; text-align: center; font-family: Monospace; font-weight: bold; padding;color:black; z-index: 1000;'>
+<div style='position:absolute; top: 10px; width: 100%; text-align: center; font-family: Monospace; font-weight: bold; padding;color:black; z-index: 1000;'>
   <a href="https://github.com/artoolkit/jsartoolkit5" target="_blank">js artoolkit</a>
   - Example of js artoolkit
   <br/>
-  <a href='javascript:void(0)' onclick='switchSource("video")' style='color: lightgrey'>video</a>
-  <a href='javascript:void(0)' onclick='switchSource("image")' style='color: lightgrey'>image</a>
-  <a href='javascript:void(0)' onclick='switchSource("webcam")' style='color: lightgrey'>webcam</a>
+  <a href='javascript:void(0)' onclick='switchSource("video")' style='color: black'>video</a>
+  <a href='javascript:void(0)' onclick='switchSource("image")' style='color: black'>image</a>
+  <a href='javascript:void(0)' onclick='switchSource("webcam")' style='color: black'>webcam</a>
 </div>
 <body><script>
 	var debugEnabled	= false
@@ -25,44 +25,44 @@
 	//		Init
 	//////////////////////////////////////////////////////////////////////////////////
 
-	function initDomElementVideo(onReady){
-		var video = document.createElement('video');
-		document.body.appendChild(video)
-		video.src = 'videos/output_4.ogg';
-		video.autoplay = true;
-		video.webkitPlaysinline = true;
-		video.controls = false;
-		video.loop = true;
-		video.width = 640;
-		video.height = 480;
+	function initSourceVideo(onReady){
+		var srcElement = document.createElement('video');
+		document.body.appendChild(srcElement)
+		srcElement.src = 'videos/output_4.ogg';
+		srcElement.autoplay = true;
+		srcElement.webkitPlaysinline = true;
+		srcElement.controls = false;
+		srcElement.loop = true;
+		srcElement.width = 640;
+		srcElement.height = 480;
 		setTimeout(function(){
 			onReady && onReady()
 		}, 0)
-		return video
+		return srcElement
 	}
 
-	function initDomElementImage(onReady){
-		var video = document.createElement('img')
-		document.body.appendChild(video)
-		video.src = './images/armchair.jpg'
-		// video.src = './images/chalk.jpg'
-		// video.src = './images/chalk_multi.jpg'
-		// video.src = './images/kuva.jpg'
-		// video.src = './images/img.jpg'
-		video.width = 640
-		video.height = 480
+	function initSourceImage(onReady){
+		var srcElement = document.createElement('img')
+		document.body.appendChild(srcElement)
+		srcElement.src = './images/armchair.jpg'
+		// srcElement.src = './images/chalk.jpg'
+		// srcElement.src = './images/chalk_multi.jpg'
+		// srcElement.src = './images/kuva.jpg'
+		// srcElement.src = './images/img.jpg'
+		srcElement.width = 640
+		srcElement.height = 480
 
 		setTimeout(function(){
 			onReady && onReady()
 		}, 0)
-		return video
+		return srcElement
 	}
 
-	function initDomElementWebcam(onReady){
+	function initSourceWebcam(onReady){
 		navigator.getUserMedia  = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 		
-		var video = document.createElement('video');
-		document.body.appendChild(video);
+		var srcElement = document.createElement('video');
+		document.body.appendChild(srcElement);
 		
 		if (navigator.getUserMedia == false )	console.log("navigator.getUserMedia not present in your browser");
 		navigator.getUserMedia({
@@ -75,13 +75,14 @@
 		  	}
 		}, function success(stream) {
 			console.log('success', stream);
-			video.src = window.URL.createObjectURL(stream);
-			video.onclick = function() { video.play(); };
-			video.play();
+			srcElement.src = window.URL.createObjectURL(stream);
+			srcElement.onclick = function() { srcElement.play(); };
+			srcElement.play();
 		
 			var cameraParameters = new ARCameraParam('data/camera_para.dat', function() {
+				// wait until the video stream is ready
 				var interval = setInterval(function() {
-					if (!video.videoWidth)	return;
+					if (!srcElement.videoWidth)	return;
 					onReady()
 					clearInterval(interval)
 				}, 1000/100);
@@ -90,7 +91,7 @@
 			console.log("Can't access user media", error);
 		});
 		
-		return video
+		return srcElement
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -110,16 +111,16 @@
         }
 
 	if( optionPresentInHash('webcam') === true ){		
-		var video = initDomElementWebcam(function(){
-			onVideoReady(video.videoWidth, video.videoHeight)		
+		var video = initSourceWebcam(function(){
+			onSourceImageReady(video.videoWidth, video.videoHeight)		
 		})
 	}else if( optionPresentInHash('image') === true ){		
-		var video = initDomElementImage(function(){
-			onVideoReady(video.width, video.height)
+		var video = initSourceImage(function(){
+			onSourceImageReady(video.width, video.height)
 		})
 	}else if( optionPresentInHash('video') === true ){		
-		var video = initDomElementVideo(function(){
-			onVideoReady(video.width, video.height)
+		var video = initSourceVideo(function(){
+			onSourceImageReady(video.width, video.height)
 		})
 	}else {
 		switchSource('video')
@@ -175,7 +176,7 @@
 	scene.add(camera);
 
 	var arController = null;
-	function onVideoReady(width, height, onCompleted){
+	function onSourceImageReady(width, height, onCompleted){
 		var cameraParameters = new ARCameraParam('data/camera_para.dat', function() {
 		
 			arController = new ARController(width, height, cameraParameters);
@@ -200,6 +201,7 @@
 		if (!arController) return;
 
 		arController.detectMarker(video);
+
 		if( debugEnabled )	arController.debugDraw();		
 		// update markerRoot with the found markers
 		var markerNum = arController.getMarkerNum();
