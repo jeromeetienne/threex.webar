@@ -14,12 +14,14 @@
   <a href="https://github.com/artoolkit/jsartoolkit5" target="_blank">js artoolkit</a>
   - Example of js artoolkit
   <br/>
-  <a href='javascript:void(0)' onclick='switchSource("video")' style='color: black'>video</a>
-  <a href='javascript:void(0)' onclick='switchSource("image")' style='color: black'>image</a>
-  <a href='javascript:void(0)' onclick='switchSource("webcam")' style='color: black'>webcam</a>
+  <a href='javascript:void(0)' onclick='switchSource("video")' style='color: grey'>video</a>
+  <a href='javascript:void(0)' onclick='switchSource("image")' style='color: grey'>image</a>
+  <a href='javascript:void(0)' onclick='switchSource("webcam")' style='color: grey'>webcam</a>
+  <br/>
+  <a href='javascript:void(0)' onclick='toggleDebug()' style='color: grey'>toggle Debug</a>
 </div>
 <body><script>
-	var debugEnabled	= false
+	var debugEnabled	= optionPresentInHash('debugEnabled') ? true : false
 
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Init
@@ -99,37 +101,54 @@
 	//////////////////////////////////////////////////////////////////////////////
 
 
-        function optionPresentInHash(varName) {
-            var query = window.location.hash.substring(1);
-            var vars = query.split('&');
-            for (var i = 0; i < vars.length; i++) {
-                if (decodeURIComponent(vars[i]) == varName) {
-                    return true
-                }
-            }
-            return false
-        }
+	function optionPresentInHash(varName) {
+		var query = window.location.hash.substring(1);
+		var vars = query.split('&');
+		for (var i = 0; i < vars.length; i++) {
+			if (decodeURIComponent(vars[i]) == varName) {
+				return true
+			}
+		}
+		return false
+	}
 
 	if( optionPresentInHash('webcam') === true ){		
-		var video = initSourceWebcam(function(){
-			onSourceImageReady(video.videoWidth, video.videoHeight)		
+		var sourceType = 'webcam'
+		var srcElement = initSourceWebcam(function(){
+			onSourceImageReady(srcElement.videoWidth, srcElement.videoHeight)		
 		})
 	}else if( optionPresentInHash('image') === true ){		
-		var video = initSourceImage(function(){
-			onSourceImageReady(video.width, video.height)
+		var sourceType = 'image'
+		var srcElement = initSourceImage(function(){
+			onSourceImageReady(srcElement.width, srcElement.height)
 		})
 	}else if( optionPresentInHash('video') === true ){		
-		var video = initSourceVideo(function(){
-			onSourceImageReady(video.width, video.height)
+		var sourceType = 'video'
+		var srcElement = initSourceVideo(function(){
+			onSourceImageReady(srcElement.width, srcElement.height)
 		})
 	}else {
 		switchSource('video')
 	}
 	
 	function switchSource(sourceType){
-		location.hash = '#'+sourceType
-		location.reload()
+		reloadOptions(sourceType, debugEnabled)
 	}
+	function toggleDebug(){
+		reloadOptions(sourceType, debugEnabled ? false : true)		
+	}
+	
+        function reloadOptions(sourceType, debugEnabled){
+                var optionsString = ''
+                optionsString += sourceType
+
+                if( debugEnabled === true ){
+                        optionsString += (optionsString.length ? '&': '') + 'debugEnabled'
+                }
+                location.hash   = '#'+optionsString
+                location.reload()                
+        }
+
 	
 	//////////////////////////////////////////////////////////////////////////////////
 	//		Init
@@ -200,7 +219,7 @@
 	onRenderFcts.push(function(){
 		if (!arController) return;
 
-		arController.detectMarker(video);
+		arController.detectMarker(srcElement);
 
 		if( debugEnabled )	arController.debugDraw();		
 		// update markerRoot with the found markers
